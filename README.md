@@ -5,13 +5,14 @@ in PHP.
 
 This library could be used to filter, convert or reduce any array. 
 
+Continuous integration
+------------
+[![Build Status](https://travis-ci.org/hguenot/phpstream.svg)](https://travis-ci.org/hguenot/phpstream)
+[![Code coverage](https://img.shields.io/codecov/c/github/hguenot/phpstream.svg)](https://codecov.io/github/hguenot/phpstream)
 
 Installation
 ------------
-
 The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
-
-[![Build Status](https://travis-ci.org/hguenot/phpstream.svg)](https://travis-ci.org/hguenot/phpstream)
 
 Either run
 
