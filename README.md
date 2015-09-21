@@ -11,6 +11,8 @@ Installation
 
 The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 
+[![Build Status](https://travis-ci.org/hguenot/phpstream.svg)](https://travis-ci.org/hguenot/phpstream)
+
 Either run
 
 ```
