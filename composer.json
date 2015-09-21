@@ -1,0 +1,20 @@
+{
+    "name": "hguenot/phpstream",
+    "description": "PHPStream claims to be a partial PHP port of the Java Stream API.",
+    "type": "library",
+    "keywords": ["stream","java stream api"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Hervé Guenot",
+            "email": "herve@guenot.info"
+        }
+    ],
+    "require": {
+    },
+    "autoload": {
+        "psr-4": {
+            "phpstream\\": "src/phpstream"
+        }
+    }
+}
