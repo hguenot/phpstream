@@ -9,6 +9,7 @@ Continuous integration
 ------------
 [![Build Status](https://travis-ci.org/hguenot/phpstream.svg)](https://travis-ci.org/hguenot/phpstream)
 [![Code coverage](https://img.shields.io/codecov/c/github/hguenot/phpstream.svg)](https://codecov.io/github/hguenot/phpstream)
+[![Status](https://img.shields.io/badge/status-under_development-yellow.svg)](https://github.com/hguenot/phpstream)
 
 Installation
 ------------
