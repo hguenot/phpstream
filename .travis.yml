@@ -3,6 +3,5 @@ php:
   - 5.6
   - nightly
 
-script: phpunit --bootstrap src/autoload.php test
-
-
+script:
+  - phpunit
