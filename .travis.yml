@@ -4,8 +4,10 @@ php:
   - nightly
 
 script:
-  - phpunit --coverage-clover=phpstream.clover
-  - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover phpstream.clover
-  - rm -f phpstream.clover ocular.phar
+  - phpunit --coverage-clover=coverage.xml
 
+before_install:
+  - pip install --user codecov
+  
+after_success:
+  - codecov
