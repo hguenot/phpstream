@@ -92,4 +92,29 @@ class StreamReduceTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(-25, $res->get());
 	}
 	
+	public function testException() {
+		try {
+			$array = [ ];
+			$stream = new Stream($array);
+			$stream->reduce('MinFunction');
+		} catch (\InvalidArgumentException $ex) {
+			return;
+		}
+		
+		$this->fail('An expected exception has not been raised.');
+	}
+	
+	
+	public function testExceptionWithDefault() {
+		try {
+			$array = [ ];
+			$stream = new Stream($array);
+			$stream->reduceWithDefault('MinFunction', phpstream\util\Optional::of(-25));
+		} catch (\InvalidArgumentException $ex) {
+			return;
+		}
+		
+		$this->fail('An expected exception has not been raised.');
+	}
+	
 }

@@ -42,4 +42,25 @@ class StreamFilterTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals([ 'b' => 2, 'd' => 4, 'f' => 6 ], $res);
 	}
 	
+	public function testNotCallable() {
+		try {
+			Stream::of()->filter(true);
+		} catch (\InvalidArgumentException $ex) {
+			return ;
+		}
+		$this->fail('An expected exception has not been raised.');
+	}
+	
+	public function testCallPropagationStopped() {
+		$stopPropagation = true;
+		try {
+			$op = new \phpstream\operators\FilterOperator(new EvenFunction());
+			$op->execute(9, $stopPropagation);
+		} catch (LogicException $ex) {
+			$this->assertTrue($stopPropagation);
+			return;
+		}
+		$this->fail('An expected exception has not been raised.');
+	}
+	
 }

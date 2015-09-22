@@ -40,4 +40,25 @@ class StreamMapTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals([ 'a' => 1, 'b' => 4, 'c' => 9, 'd' => 16, 'e' => 25, 'f' => 36 ], $res);
 	}
 	
+	public function testNotCallable() {
+		try {
+			Stream::of()->map(true);
+		} catch (\InvalidArgumentException $ex) {
+			return ;
+		}
+		$this->fail('An expected exception has not been raised.');
+	}
+	
+	public function testCallPropagationStopped() {
+		$stopPropagation = true;
+		try {
+			$op = new \phpstream\operators\MapOperator(new SquareFunction());
+			$op->execute(9, $stopPropagation);
+		} catch (LogicException $ex) {
+			$this->assertTrue($stopPropagation);
+			return;
+		}
+		$this->fail('An expected exception has not been raised.');
+	}
+	
 }

@@ -88,4 +88,28 @@ class StreamMinMaxTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($res->isEmpty());
 	}
 	
+	public function testMinException() {
+		try {
+			$array = [ ];
+			$stream = new Stream($array);
+			$stream->min('reverseComparator');
+		} catch (\InvalidArgumentException $ex) {
+			return;
+		}
+		
+		$this->fail('An expected exception has not been raised.');
+	}
+	
+	public function testMaxException() {
+		try {
+			$array = [ ];
+			$stream = new Stream($array);
+			$stream->max('reverseComparator');
+		} catch (\InvalidArgumentException $ex) {
+			return;
+		}
+		
+		$this->fail('An expected exception has not been raised.');
+	}
+	
 }

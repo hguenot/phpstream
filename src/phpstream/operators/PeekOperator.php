@@ -61,7 +61,7 @@ class PeekOperator extends AbstractOperator {
 				call_user_func($this->callable, $value);
 			return $value;
 		}
-		throw new LogicException('Propagation has been stopped before this call.');
+		throw new \LogicException('Propagation has been stopped before this call.');
 	}
 
 }

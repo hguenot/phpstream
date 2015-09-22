@@ -60,7 +60,7 @@ class MapOperator extends AbstractOperator {
 				$this->func->apply($value) : 
 				call_user_func($this->callable, $value);
 		}
-		throw new LogicException('Propagation has been stopped before this call.');
+		throw new \LogicException('Propagation has been stopped before this call.');
 	}
 
 }
