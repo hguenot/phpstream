@@ -7,9 +7,10 @@ This library could be used to filter, convert or reduce any array.
 
 Continuous integration
 ------------
-[![Build Status](https://travis-ci.org/hguenot/phpstream.svg)](https://travis-ci.org/hguenot/phpstream)
-[![Code coverage](https://img.shields.io/codecov/c/github/hguenot/phpstream.svg)](https://codecov.io/github/hguenot/phpstream)
-[![Status](https://img.shields.io/badge/status-under_development-yellow.svg)](https://github.com/hguenot/phpstream)
+[![Build Status](https://travis-ci.org/hguenot/phpstream.svg)](https://travis-ci.org/hguenot/phpstream) 
+[![Code coverage](https://img.shields.io/codecov/c/github/hguenot/phpstream.svg)](https://codecov.io/github/hguenot/phpstream) 
+[![GitHub version](https://img.shields.io/github/release/hguenot/phpstream.svg)](https://github.com/hguenot/phpstream/releases) 
+[![Packagist version](https://img.shields.io/packagist/v/hguenot/phpstream.svg)](https://packagist.org/packages/hguenot/phpstream)
 
 Installation
 ------------
