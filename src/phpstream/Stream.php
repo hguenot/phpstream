@@ -306,7 +306,7 @@ class Stream {
 	 * 
 	 * @param StreamOperator $operator Operator to register.
 	 */
-	protected function addOperator(StreamOperator &$operator) {
+	protected function addOperator(StreamOperator $operator) {
 		$this->operators[] = $operator;
 	}
 	
