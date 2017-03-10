@@ -25,7 +25,7 @@ abstract class Optional {
     /**
      * Returns an empty Optional instance.
 	 * 
-	 * @return An empty Optional instance.
+	 * @return Optional An empty Optional instance.
      */
     public static function absent() {
         return Absent::instance();
@@ -36,7 +36,7 @@ abstract class Optional {
 	 * 
 	 * @param mixed $reference Non-null reference to store.
 	 * 
-	 * @return An Optional instance containing the given reference.
+	 * @return Optional An Optional instance containing the given reference.
 	 * 
 	 * @throws \InvalidArgumentException if given reference is null.
      */
@@ -53,7 +53,7 @@ abstract class Optional {
 	 * 
 	 * @param mixed $reference Non-null reference to store.
 	 * 
-	 * @return An empty Optional instance or an Optional instance containing the given reference.
+	 * @return Optional An empty Optional instance or an Optional instance containing the given reference.
      */
     public static function fromNullable($reference) {
 		if ($reference instanceof Optional)
@@ -65,7 +65,7 @@ abstract class Optional {
 	/**
 	 * Returns the Optional instance emptiness.
 	 * 
-	 * @return `TRUE` if the current Optional instance is empty, `FALSE` otherwise.
+	 * @return boolean `TRUE` if the current Optional instance is empty, `FALSE` otherwise.
 	 */
     public abstract function isEmpty();
 	
@@ -73,7 +73,7 @@ abstract class Optional {
 	/**
 	 * Returns the contained reference for a non empty Optional instance, an Exception otherwise.
 	 * 
-	 * @return The contained reference for a non empty Optional instance.
+	 * @return mixed The contained reference for a non empty Optional instance.
 	 * 
 	 * @throws \BadMethodCallException If the current Optional instance is empty.
 	 */
@@ -84,7 +84,7 @@ abstract class Optional {
 	 * 
 	 * @param mixed $defaultValue The default value.
 	 * 
-	 * @return The contained reference for a non empty Optional instance or the default value.
+	 * @return mixed The contained reference for a non empty Optional instance or the default value.
 	 * 
 	 * @throws \InvalidArgumentException if default value is null.
 	 */
@@ -93,25 +93,27 @@ abstract class Optional {
 	/**
 	 * Returns the contained reference for a non empty Optional instance, null otherwise.
 	 * 
-	 * @return The contained reference for a non empty Optional instance or `null`.
+	 * @return mixed|null The contained reference for a non empty Optional instance or `null`.
 	 */
     public abstract function orNull();
 	
 	/**
 	 * Checks if current instance and given Optional instance contains same object.
 	 * 
-	 * @return `TRUE` if current instance and given Optional instance contains same object, `FALSE` otherwise.
+	 * @return boolean `TRUE` if current instance and given Optional instance contains same object, `FALSE` otherwise.
 	 * 
 	 * @ignore
 	 */
     public abstract function equals($object);
- 
-    /**
-     * Make sure the passed reference is not null.
-	 * 
+
+	/**
+	 * Make sure the passed reference is not null.
+	 *
 	 * @param mixed $reference Reference to test.
 	 * @param string $message Error message if reference is null
-	 * 
+	 *
+	 * @return mixed
+	 *
 	 * @throws \InvalidArgumentException If reference is null.
 	 */
     protected static function checkNotNull($reference, $message = null) {
@@ -202,7 +204,7 @@ class Absent extends Optional {
 	 * 
 	 * @return Absent The Singleton instance.
 	 */
-	protected static function instance() {
+	public static function instance() {
 		if(static::$instance == null) {
 			return static::$instance = new Absent();
 		}
@@ -286,4 +288,5 @@ class Present extends Optional {
         return false;
     }
 }
+
 
