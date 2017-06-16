@@ -281,8 +281,36 @@ class Stream {
 	 */
 	public function max($cmp = null) {
 		return $this->collect(new MaxCollector($cmp));
-	}	
-	
+	}
+
+	/**
+	 * Returns an optional containing the max value of the stream if exists.
+	 *
+	 * @param callable|string $indexer Indexer function or field.
+	 * @param bool $allowDuplicate If duplicates are allowed, no error if given when 2 elements got same key.
+	 *
+	 * @return Stream
+	 */
+	public function index($indexer, $allowDuplicate = false) {
+		$collected = $this->collect(new ListCollector());
+		$res = [];
+
+		$f = is_string($indexer)
+			? function($e) use ($indexer) {
+				return $e->$indexer;
+			}
+			: $indexer;
+
+		foreach ($collected as $e) {
+			$key = $f($e);
+			if (!$allowDuplicate && array_key_exists($key, $res))
+				throw new \InvalidArgumentException("Multiple elements got same key.");
+			$res[$key] = $e;
+		}
+
+		return new Stream($res);
+	}
+
 	/**
 	 * Executes all operations and return an array of results.
 	 * 
