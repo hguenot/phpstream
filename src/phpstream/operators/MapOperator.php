@@ -52,7 +52,7 @@ class MapOperator extends AbstractOperator {
 	 * 
 	 * @return mixed The converted element.
 	 * 
-	 * @throws LogicException If it was called but $stopPropagation already set to `FALSE`.
+	 * @throws \LogicException If it was called but $stopPropagation already set to `FALSE`.
 	 */
 	public function execute($value, &$stopPropagation) {
 		if (!$stopPropagation) {

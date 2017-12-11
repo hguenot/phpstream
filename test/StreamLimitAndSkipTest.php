@@ -1,10 +1,10 @@
 <?php
 
-use phpstream\Stream;
 use phpstream\collectors\ListCollector;
 use phpstream\collectors\MapCollector;
+use phpstream\Stream;
 
-class StreamLimitAndSkipTest extends PHPUnit_Framework_TestCase {
+class StreamLimitAndSkipTest extends \PHPUnit\Framework\TestCase {
 
 	public function testLimit() {
 		$array = [ 1, 2, 3, 4, 5, 6 ];

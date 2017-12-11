@@ -47,6 +47,7 @@ class LimitOperator extends AbstractOperator {
 			return $value;
 		}
 		$stopPropagation = true;
+		return null;
 	}
 
 	/**

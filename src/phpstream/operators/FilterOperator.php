@@ -57,7 +57,7 @@ class FilterOperator extends AbstractOperator {
 	 * 
 	 * @return mixed The given element or `null`.
 	 * 
-	 * @throws LogicException If it was called but $stopPropagation already set to `FALSE`
+	 * @throws \LogicException If it was called but $stopPropagation already set to `FALSE`
 	 */
 	public function execute($value, &$stopPropagation) {
 		if (!$stopPropagation) {

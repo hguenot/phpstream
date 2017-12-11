@@ -52,7 +52,7 @@ class PeekOperator extends AbstractOperator {
 	 * 
 	 * @return mixed The collected value.
 	 * 
-	 * @throws LogicException If it was called but $stopPropagation already set to `FALSE`.
+	 * @throws \LogicException If it was called but $stopPropagation already set to `FALSE`.
 	 */
 	public function execute($value, &$stopPropagation) {
 		if (!$stopPropagation) {

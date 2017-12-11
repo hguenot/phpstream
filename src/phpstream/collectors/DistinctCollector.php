@@ -21,8 +21,8 @@ class DistinctCollector extends AbstractCollector {
 	/**
 	 * Collects elements removing duplicates maintainig key/value pair (the first one).
 	 * 
-	 * @param type $key Key value in the initial array (<em>array index</em>)
-	 * @param type $value Value after processing
+	 * @param mixed $key Key value in the initial array (<em>array index</em>)
+	 * @param mixed $value Value after processing
 	 */
 	public function collect($key, $value) {
 		if (!in_array($value, $this->array, true))
@@ -32,7 +32,7 @@ class DistinctCollector extends AbstractCollector {
 	/**
 	 * Returns the collected elements array (associative array).
 	 * 
-	 * @return type
+	 * @return mixed[]
 	 */
 	public function get() {
 		return $this->array;

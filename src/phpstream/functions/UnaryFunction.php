@@ -18,7 +18,7 @@ interface UnaryFunction {
 	/**
 	 * Applies this function to the given arguments.
 	 * 
-	 * @param type $value The argument.
+	 * @param mixed $value The argument.
 	 * 
 	 * @return mixed Result value of the function
 	 */

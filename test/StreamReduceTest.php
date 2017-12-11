@@ -4,7 +4,7 @@ use phpstream\Stream;
 
 include_once(__DIR__ . '/functions/MinFunction.php');
 
-class StreamReduceTest extends PHPUnit_Framework_TestCase {
+class StreamReduceTest extends \PHPUnit\Framework\TestCase {
 
 	public function testCallable() {
 		$array = [ 2, 3, -2, 4, 5, 6 ];
@@ -97,11 +97,10 @@ class StreamReduceTest extends PHPUnit_Framework_TestCase {
 			$array = [ ];
 			$stream = new Stream($array);
 			$stream->reduce('MinFunction');
-		} catch (\InvalidArgumentException $ex) {
-			return;
+			$this->fail('An expected exception has not been raised.');
+		} catch (\Exception $ex) {
+			$this->assertInstanceOf(\InvalidArgumentException::class, $ex, 'Should be an InvalidArgumentException exception');
 		}
-		
-		$this->fail('An expected exception has not been raised.');
 	}
 	
 	
@@ -110,11 +109,10 @@ class StreamReduceTest extends PHPUnit_Framework_TestCase {
 			$array = [ ];
 			$stream = new Stream($array);
 			$stream->reduceWithDefault('MinFunction', phpstream\util\Optional::of(-25));
-		} catch (\InvalidArgumentException $ex) {
-			return;
+			$this->fail('An expected exception has not been raised.');
+		} catch (\Exception $ex) {
+			$this->assertInstanceOf(\InvalidArgumentException::class, $ex, 'Should be an InvalidArgumentException exception');
 		}
-		
-		$this->fail('An expected exception has not been raised.');
 	}
 	
 }

@@ -18,8 +18,8 @@ interface BiFunction {
 	/**
 	 * Applies this function to the given arguments.
 	 * 
-	 * @param type $first The first argument.
-	 * @param type $second The second argument.
+	 * @param mixed $first The first argument.
+	 * @param mixed $second The second argument.
 	 * 
 	 * @return mixed Result value of the function
 	 */

@@ -20,8 +20,8 @@ interface Comparator {
 	 * Returns a negative integer, zero, or a positive integer as the first argument is less than, 
 	 * equal to, or greater than the second.
 	 * 
-	 * @param type $o1
-	 * @param type $o2
+	 * @param mixed $o1
+	 * @param mixed $o2
 	 * 
 	 * @return int
 	 */

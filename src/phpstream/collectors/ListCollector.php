@@ -21,8 +21,8 @@ class ListCollector extends AbstractCollector {
 	/**
 	 * Collects all items resulting of the Stream Process discarding the key/value pair.
 	 * 
-	 * @param type $key Key value in the initial array (<em>array index</em>)
-	 * @param type $value Value after processing
+	 * @param mixed $key Key value in the initial array (<em>array index</em>)
+	 * @param mixed $value Value after processing
 	 */
 	public function collect($key, $value) {
 		$this->array[] = $value;

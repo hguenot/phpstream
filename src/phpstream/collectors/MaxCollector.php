@@ -10,8 +10,8 @@
 
 namespace phpstream\collectors;
 
-use phpstream\util\Optional;
 use phpstream\util\Comparator;
+use phpstream\util\Optional;
 
 /**
  * Collects the max collected element.
@@ -61,8 +61,8 @@ class MaxCollector extends AbstractCollector {
 	/**
 	 * Collects the max element at any time regarding the comparator method.
 	 * 
-	 * @param type $key Key value in the initial array (<em>array index</em>)
-	 * @param type $value Value after processing
+	 * @param mixed $key Key value in the initial array (<em>array index</em>)
+	 * @param mixed $value Value after processing
 	 */
 	public function collect($key, $value) {
 		if ($this->current->isEmpty()) {

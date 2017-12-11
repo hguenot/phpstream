@@ -2,7 +2,7 @@
 
 use phpstream\Stream;
 
-class StreamFindTest extends PHPUnit_Framework_TestCase {
+class StreamFindTest extends \PHPUnit\Framework\TestCase {
 
 	public function testFirstNoData() {
 		$array = [ ];

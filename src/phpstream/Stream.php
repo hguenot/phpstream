@@ -10,8 +10,6 @@
 
 namespace phpstream;
 
-use phpstream\StreamOperator;
-
 use phpstream\collectors\AnyCollector;
 use phpstream\collectors\DistinctCollector;
 use phpstream\collectors\FirstCollector;
@@ -21,13 +19,11 @@ use phpstream\collectors\MaxCollector;
 use phpstream\collectors\MinCollector;
 use phpstream\collectors\ReduceCollector;
 use phpstream\collectors\SumCollector;
-
 use phpstream\operators\FilterOperator;
 use phpstream\operators\LimitOperator;
 use phpstream\operators\MapOperator;
 use phpstream\operators\PeekOperator;
 use phpstream\operators\SkipOperator;
-
 use phpstream\util\Comparator;
 use phpstream\util\Optional;
 

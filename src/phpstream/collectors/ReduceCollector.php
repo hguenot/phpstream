@@ -10,8 +10,8 @@
 
 namespace phpstream\collectors;
 
-use phpstream\util\Optional;
 use phpstream\functions\BiFunction;
+use phpstream\util\Optional;
 
 /**
  * Reduce collector must be used to reduce array to a single value.
@@ -49,8 +49,8 @@ class ReduceCollector extends AbstractCollector {
 	 * Collects item resulting of the Stream Process and call the reduce method with previous reduced value and 
 	 * current item.
 	 * 
-	 * @param type $key Key value in the initial array (<em>array index</em>)
-	 * @param type $value Value after processing
+	 * @param mixed $key Key value in the initial array (<em>array index</em>)
+	 * @param mixed $value Value after processing
 	 */
 	public function collect($key, $value) {
 		if ($this->current->isEmpty())

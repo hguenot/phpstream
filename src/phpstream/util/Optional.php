@@ -113,10 +113,11 @@ abstract class Optional
 	 * @return mixed|null The contained reference for a non empty Optional instance or `null`.
 	 */
 	public abstract function orNull();
-
+	
 	/**
 	 * Checks if current instance and given Optional instance contains same object.
 	 *
+	 * @param mixed $object Other object
 	 * @return boolean `TRUE` if current instance and given Optional instance contains same object, `FALSE` otherwise.
 	 *
 	 * @ignore
@@ -334,11 +335,12 @@ class Present extends Optional
 	{
 		return $this->reference;
 	}
-
+	
 	/**
 	 * Checks if current instance and given Optional instance contains same object.
 	 *
-	 * @return `TRUE` if current instance and given Optional instance contains same object, `FALSE` otherwise.
+	 * @param mixed $object Other object to compare
+	 * @return bool `TRUE` if current instance and given Optional instance contains same object, `FALSE` otherwise.
 	 *
 	 * @ignore
 	 */

@@ -1,10 +1,10 @@
 <?php
 
-use phpstream\Stream;
 use phpstream\collectors\ListCollector;
 use phpstream\collectors\MapCollector;
+use phpstream\Stream;
 
-class StreamDistinctTest extends PHPUnit_Framework_TestCase {
+class StreamDistinctTest extends \PHPUnit\Framework\TestCase {
 
 	public function testList() {
 		$array = [ 1, 2, 2, 3, 4, 4, 5, 6 ];

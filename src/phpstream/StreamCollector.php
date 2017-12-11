@@ -23,8 +23,8 @@ interface StreamCollector {
 	/**
 	 * Method calls at end of the Stream process when a value could be collected.
 	 * 
-	 * @param type $key Key value in the initial array (<em>array index</em>)
-	 * @param type $value Value after processing
+	 * @param mixed $key Key value in the initial array (<em>array index</em>)
+	 * @param mixed $value Value after processing
 	 */
 	public function collect($key, $value);
 	

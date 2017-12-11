@@ -1,12 +1,12 @@
 <?php
 
-use phpstream\Stream;
 use phpstream\collectors\ListCollector;
 use phpstream\collectors\MapCollector;
+use phpstream\Stream;
 
 include_once(__DIR__ . '/functions/SquareFunction.php');
 
-class StreamMapTest extends PHPUnit_Framework_TestCase {
+class StreamMapTest extends \PHPUnit\Framework\TestCase {
 
 	public function testCallable() {
 		$array = [ 1, 2, 3, 4, 5, 6 ];
@@ -43,10 +43,10 @@ class StreamMapTest extends PHPUnit_Framework_TestCase {
 	public function testNotCallable() {
 		try {
 			Stream::of()->map(true);
-		} catch (\InvalidArgumentException $ex) {
-			return ;
+			$this->fail('An expected exception has not been raised.');
+		} catch (\Exception $ex) {
+			$this->assertInstanceOf(\InvalidArgumentException::class, $ex, 'Should be an InvalidArgumentException exception');
 		}
-		$this->fail('An expected exception has not been raised.');
 	}
 	
 	public function testCallPropagationStopped() {
@@ -54,11 +54,11 @@ class StreamMapTest extends PHPUnit_Framework_TestCase {
 		try {
 			$op = new \phpstream\operators\MapOperator(new SquareFunction());
 			$op->execute(9, $stopPropagation);
-		} catch (LogicException $ex) {
+			$this->fail('An expected exception has not been raised.');
+		} catch (\Exception $ex) {
+			$this->assertInstanceOf(LogicException::class, $ex, 'Should be an LogicException exception');
 			$this->assertTrue($stopPropagation);
-			return;
 		}
-		$this->fail('An expected exception has not been raised.');
 	}
 	
 }

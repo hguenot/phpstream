@@ -2,7 +2,7 @@
 
 use phpstream\Stream;
 
-class StreamBasicTest extends PHPUnit_Framework_TestCase {
+class StreamBasicTest extends \PHPUnit\Framework\TestCase {
 
 	public function testCountSimple() {
 		$res = Stream::of([ 1, 2, 3, 4, 5, 6 ])->count();

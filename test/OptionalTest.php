@@ -2,7 +2,7 @@
 
 use phpstream\util\Optional;
 
-class OptionalTest extends PHPUnit_Framework_TestCase {
+class OptionalTest extends \PHPUnit\Framework\TestCase {
 	
 	public function testNotEmpty() {
 		$opt = Optional::of([0, 1, 2]);
@@ -34,19 +34,19 @@ class OptionalTest extends PHPUnit_Framework_TestCase {
 		
 		try {
 			$opt->get();
-		} catch (\BadMethodCallException $ex) {
-			return ;
+			$this->fail('An expected exception has not been raised.');
+		} catch (\Exception $ex) {
+			$this->assertInstanceOf(\BadMethodCallException::class, $ex, 'Should be an InvalidArgumentException exception');
 		}
-		$this->fail('An expected exception has not been raised.');
 	}
 	
 	public function testInvalidValue() {
 		try {
 			Optional::of(null);
-		} catch (\InvalidArgumentException $ex) {
-			return ;
+			$this->fail('An expected exception has not been raised.');
+		} catch (\Exception $ex) {
+			$this->assertInstanceOf(\InvalidArgumentException::class, $ex, 'Should be an InvalidArgumentException exception');
 		}
-		$this->fail('An expected exception has not been raised.');
 	}
 	
 	public function testOrElseNullNotEmpty() {
@@ -57,10 +57,10 @@ class OptionalTest extends PHPUnit_Framework_TestCase {
 		
 		try {
 			$opt->orElse(null);
-		} catch (\InvalidArgumentException $ex) {
-			return ;
+			$this->fail('An expected exception has not been raised.');
+		} catch (\Exception $ex) {
+			$this->assertInstanceOf(\InvalidArgumentException::class, $ex, 'Should be an InvalidArgumentException exception');
 		}
-		$this->fail('An expected exception has not been raised.');
 	}
 	
 	public function testOrElseNullEmpty() {
@@ -71,10 +71,10 @@ class OptionalTest extends PHPUnit_Framework_TestCase {
 		
 		try {
 			$opt->orElse(null);
-		} catch (\InvalidArgumentException $ex) {
-			return ;
+			$this->fail('An expected exception has not been raised.');
+		} catch (\Exception $ex) {
+			$this->assertInstanceOf(\InvalidArgumentException::class, $ex, 'Should be an InvalidArgumentException exception');
 		}
-		$this->fail('An expected exception has not been raised.');
 	}
 	
 	public function testOptionalEquals() {
