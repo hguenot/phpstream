@@ -21,16 +21,25 @@ class MapCollector extends AbstractCollector {
 	/** @var callable */
 	private $keyMapper;
 	
+	/** @var callable */
+	private $valueMapper;
+	
 	/**
 	 * MapCollector constructor.
 	 * @param callable $keyMapper
 	 */
-	public function __construct(callable $keyMapper = null) {
+	public function __construct(callable $keyMapper = null, callable $valueMapper = null) {
 		parent::__construct();
 		$this->keyMapper = $keyMapper
 			? $keyMapper
 			: function($key, $value) {
 				return $key;
+			};
+		
+		$this->valueMapper = $valueMapper
+			? $valueMapper
+			: function($key, $value) {
+				return $value;
 			};
 	}
 	
@@ -41,7 +50,7 @@ class MapCollector extends AbstractCollector {
 	 * @param mixed $value Value after processing
 	 */
 	public function collect($key, $value) {
-		$this->array[call_user_func($this->keyMapper, $key, $value)] = $value;
+		$this->array[call_user_func($this->keyMapper, $key, $value)] = call_user_func($this->valueMapper, $key, $value);
 	}
 
 	/** 

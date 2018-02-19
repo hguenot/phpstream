@@ -40,6 +40,20 @@ class StreamMapTest extends \PHPUnit\Framework\TestCase {
 		$this->assertEquals([ 'a' => 1, 'b' => 4, 'c' => 9, 'd' => 16, 'e' => 25, 'f' => 36 ], $res);
 	}
 	
+	public function testMapCollectorValue() {
+		$array = [ 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5, 'f' => 6 ];
+		$stream = new Stream($array);
+		$res = $stream->collect(new MapCollector(
+			function($key, $value) {
+				return $value;
+			},
+			function($key, $value) {
+				return strtoupper($key);
+			}));
+		
+		$this->assertEquals([ 1 => 'A', 2 => 'B', 3 => 'C', 4 => 'D', 5 => 'E', 6 => 'F' ], $res);
+	}
+	
 	public function testNotCallable() {
 		try {
 			Stream::of()->map(true);
