@@ -60,6 +60,30 @@ class Stream {
 	
 	/**
 	 * Start a new Stream process over given array.
+	 * s
+	 * @param array $arraysOrStreams
+	 *
+	 * @return Stream The new stream.
+	 */
+	public static function concat(... $arraysOrStreams): Stream {
+		$array = [];
+		foreach ($arraysOrStreams as $arrayOrStream) {
+			if ($arrayOrStream instanceof Stream)
+				$arrayOrStream = $arrayOrStream->array;
+			
+			if (!is_array($arrayOrStream))
+				throw new \InvalidArgumentException('Variable must be a PHP Stream or an array !');
+			
+			foreach ($arrayOrStream as $key => $value) {
+				$array[$key] = $value;
+			}
+		}
+		
+		return new Stream($array);
+	}
+	
+	/**
+	 * Start a new Stream process over given array.
 	 * 
 	 * @param array $array Array on which apply stream process.
 	 */
