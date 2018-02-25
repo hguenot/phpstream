@@ -74,7 +74,15 @@ abstract class Optional
 	 * @return boolean `TRUE` if the current Optional instance is empty, `FALSE` otherwise.
 	 */
 	public abstract function isEmpty();
-
+	
+	/**
+	 * Returns the Optional instance completeness.
+	 *
+	 * @return boolean `TRUE` if the current Optional instance is not empty (contains any value), `FALSE` otherwise.
+	 */
+	public function isNotEmpty() {
+		return !$this->isEmpty();
+	}
 
 	/**
 	 * Returns the contained reference for a non empty Optional instance, an Exception otherwise.
