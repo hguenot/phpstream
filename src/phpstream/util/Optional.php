@@ -9,6 +9,7 @@
  */
 
 namespace phpstream\util;
+use phpstream\operators\MapOperator;
 
 /**
  * A container object which may or may not contain a non-null value.
@@ -92,6 +93,13 @@ abstract class Optional
 	 * @throws \BadMethodCallException If the current Optional instance is empty.
 	 */
 	public abstract function get();
+
+	/**
+	 * Applying mapper on contained reference and return a new Optional element.
+	 *
+	 * @return Optional Optional instance containig mapped value or Absent.
+	 */
+	public abstract function map($mapper);
 
 	/**
 	 * Returns the contained reference for a non empty Optional instance, the not-null default value otherwise.
@@ -195,7 +203,17 @@ class Absent extends Optional
 		throw new \BadMethodCallException("Optional->get() cannot be called on an absent value");
 	}
 
-	/**
+    /**
+     * Always returns current instance
+     *
+     * @return Optional Optional instance containig mapped value or Absent.
+     */
+	public function map($mapper)
+    {
+        return $this;
+    }
+
+    /**
 	 * Always returns the non-null default value.
 	 *
 	 * @param mixed $defaultValue The default value.
@@ -304,7 +322,17 @@ class Present extends Optional
 		return $this->reference;
 	}
 
-	/**
+    /**
+     * Applying mapper on contained reference and return a new Optional element.
+     *
+     * @return Optional Optional instance containig mapped value or Absent.
+     */
+	public function map($mapper)
+    {
+        return Optional::fromNullable((new MapOperator($mapper))->execute($this->reference));
+    }
+
+    /**
 	 * Always returns the stored reference.
 	 *
 	 * @param mixed $defaultValue The default value.
