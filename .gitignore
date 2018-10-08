@@ -1,4 +1,8 @@
 nbproject
 docs/api/phpdoc-cache-*
-
 /vendor/
+coverage.xml
+.settings
+.buildpath
+.project
+composer.lock

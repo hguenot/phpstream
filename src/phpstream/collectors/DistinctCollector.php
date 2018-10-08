@@ -7,22 +7,23 @@
  * @license https://github.com/hguenot/phpstream/blob/master/LICENSE The MIT License (MIT)
  * @link https://github.com/hguenot/phpstream#readme Readme
  */
-
 namespace phpstream\collectors;
 
 /**
  * Collects elements removing duplicates maintainig key/value pair (the first one).
  */
 class DistinctCollector extends AbstractCollector {
-	
+
 	/** @var array The collected elements array */
 	private $array;
-	
+
 	/**
 	 * Collects elements removing duplicates maintainig key/value pair (the first one).
-	 * 
-	 * @param mixed $key Key value in the initial array (<em>array index</em>)
-	 * @param mixed $value Value after processing
+	 *
+	 * @param mixed $key
+	 *        	Key value in the initial array (<em>array index</em>)
+	 * @param mixed $value
+	 *        	Value after processing
 	 */
 	public function collect($key, $value) {
 		if (!in_array($value, $this->array, true))
@@ -31,7 +32,7 @@ class DistinctCollector extends AbstractCollector {
 
 	/**
 	 * Returns the collected elements array (associative array).
-	 * 
+	 *
 	 * @return mixed[]
 	 */
 	public function get() {
@@ -44,5 +45,4 @@ class DistinctCollector extends AbstractCollector {
 	public function reset() {
 		$this->array = [];
 	}
-
 }

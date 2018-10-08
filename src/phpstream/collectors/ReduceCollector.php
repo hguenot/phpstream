@@ -7,7 +7,6 @@
  * @license https://github.com/hguenot/phpstream/blob/master/LICENSE The MIT License (MIT)
  * @link https://github.com/hguenot/phpstream#readme Readme
  */
-
 namespace phpstream\collectors;
 
 use phpstream\functions\BiFunction;
@@ -17,21 +16,22 @@ use phpstream\util\Optional;
  * Reduce collector must be used to reduce array to a single value.
  */
 class ReduceCollector extends AbstractCollector {
-	
+
 	/** @var Optional Current collected value. */
 	private $current;
-	
+
 	/** @var callable Reduce function to call. */
 	private $callable;
-	
+
 	/** @var BiFunction Reduce function to apply. */
 	private $func;
-	
+
 	/**
 	 * Construct a new Reduce Collector giving the reduce function.
-	 * 
-	 * @param callable|BiFunction $fn Reduce function.
-	 * 
+	 *
+	 * @param callable|BiFunction $fn
+	 *        	Reduce function.
+	 *        	
 	 * @throws \InvalidArgumentException If function is not callable or BiFunction
 	 */
 	public function __construct($fn) {
@@ -44,23 +44,21 @@ class ReduceCollector extends AbstractCollector {
 			throw new \InvalidArgumentException('Parameter must be callable or BiFunction.');
 		}
 	}
-	
+
 	/**
-	 * Collects item resulting of the Stream Process and call the reduce method with previous reduced value and 
+	 * Collects item resulting of the Stream Process and call the reduce method with previous reduced value and
 	 * current item.
-	 * 
-	 * @param mixed $key Key value in the initial array (<em>array index</em>)
-	 * @param mixed $value Value after processing
+	 *
+	 * @param mixed $key
+	 *        	Key value in the initial array (<em>array index</em>)
+	 * @param mixed $value
+	 *        	Value after processing
 	 */
 	public function collect($key, $value) {
 		if ($this->current->isEmpty())
 			$this->current = Optional::of($value);
 		else
-			$this->current = Optional::of(
-				$this->func !== null ?
-					$this->func->apply($this->current->get(), $value) : 
-					call_user_func($this->callable, $this->current->get(), $value)
-			);
+			$this->current = Optional::of($this->func !== null ? $this->func->apply($this->current->get(), $value) : call_user_func($this->callable, $this->current->get(), $value));
 	}
 
 	/**
@@ -69,14 +67,13 @@ class ReduceCollector extends AbstractCollector {
 	public function reset() {
 		$this->current = Optional::absent();
 	}
-	
+
 	/**
 	 * Returns the reduces value.
-	 * 
+	 *
 	 * @return Optional The reduce value.
 	 */
 	public function get() {
 		return $this->current;
 	}
-
 }

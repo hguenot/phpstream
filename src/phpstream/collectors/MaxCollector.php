@@ -7,7 +7,6 @@
  * @license https://github.com/hguenot/phpstream/blob/master/LICENSE The MIT License (MIT)
  * @link https://github.com/hguenot/phpstream#readme Readme
  */
-
 namespace phpstream\collectors;
 
 use phpstream\util\Comparator;
@@ -17,34 +16,37 @@ use phpstream\util\Optional;
  * Collects the max collected element.
  */
 class MaxCollector extends AbstractCollector {
-	
+
 	/** @var Optional Current collected element (max of all at any time) */
 	private $current;
-	
-	/** 
-	 * @var callable Comparator function. 
+
+	/**
+	 *
+	 * @var callable Comparator function.
 	 * @ignore
 	 */
 	private $callable;
-	
-	/** 
-	 * @var Comparator Comparator object. 
+
+	/**
+	 *
+	 * @var Comparator Comparator object.
 	 * @ignore
 	 */
 	private $comparator;
-	
+
 	/**
 	 * Instanciate a new MaxCollector using specific comparator function.
 	 * If comparator function is not set, use default comparator.
-	 * 
-	 * @param callable|Comparator $cmp Comparator method / object.
-	 * 
+	 *
+	 * @param callable|Comparator $cmp
+	 *        	Comparator method / object.
+	 *        	
 	 * @throws \InvalidArgumentException If parameter is not callable or instance of Comparator.
 	 */
 	public function __construct($cmp = null) {
 		parent::__construct();
 		if ($cmp === null) {
-			$this->callable = function($o1, $o2) {
+			$this->callable = function ($o1, $o2) {
 				if ($o1 == $o2)
 					return 0;
 				return $o1 < $o2 ? -1 : 1;
@@ -57,12 +59,14 @@ class MaxCollector extends AbstractCollector {
 			throw new \InvalidArgumentException('Parameter must be callable or Comparator.');
 		}
 	}
-	
+
 	/**
 	 * Collects the max element at any time regarding the comparator method.
-	 * 
-	 * @param mixed $key Key value in the initial array (<em>array index</em>)
-	 * @param mixed $value Value after processing
+	 *
+	 * @param mixed $key
+	 *        	Key value in the initial array (<em>array index</em>)
+	 * @param mixed $value
+	 *        	Value after processing
 	 */
 	public function collect($key, $value) {
 		if ($this->current->isEmpty()) {
@@ -82,14 +86,13 @@ class MaxCollector extends AbstractCollector {
 	public function reset() {
 		$this->current = Optional::absent();
 	}
-	
+
 	/**
 	 * Returns the max collected element regarding the comparator method, Optional::absent() if none.
-	 * 
+	 *
 	 * @return Optional the max collected element regarding the comparator method, Optional::absent() if none.
 	 */
 	public function get() {
 		return $this->current;
 	}
-
 }

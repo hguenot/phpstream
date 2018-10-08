@@ -7,10 +7,9 @@
  * @license https://github.com/hguenot/phpstream/blob/master/LICENSE The MIT License (MIT)
  * @link https://github.com/hguenot/phpstream#readme Readme
  */
-
 spl_autoload_register(function ($class) {
 	$basePackage = 'phpstream\\';
 	if (substr($class, 0, strlen($basePackage)) == $basePackage) {
-	   include __DIR__ . DIRECTORY_SEPARATOR . preg_replace('/\\\/', DIRECTORY_SEPARATOR, $class) . '.php';
+		include __DIR__ . DIRECTORY_SEPARATOR . preg_replace('/\\\/', DIRECTORY_SEPARATOR, $class) . '.php';
 	}
 });
