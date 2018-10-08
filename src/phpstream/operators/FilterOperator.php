@@ -68,7 +68,7 @@ class FilterOperator extends AbstractOperator {
 			throw new \LogicException('Propagation has been stopped before this call.');
 		}
 		
-		return $stopPropagation === false ? null : $value;
+		return $stopPropagation === true ? null : $value;
 	}
 
 }

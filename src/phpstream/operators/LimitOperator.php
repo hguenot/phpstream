@@ -41,7 +41,7 @@ class LimitOperator extends AbstractOperator {
 	 * 
 	 * @return mixed Collected value if limit has not been reached.
 	 */
-	public function execute($value, &$stopPropagation) {
+	public function execute($value, bool &$stopPropagation = null) {
 		if ($this->current < $this->limit){
 			$this->current++;
 			return $value;

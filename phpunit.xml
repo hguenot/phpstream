@@ -8,11 +8,10 @@
   convertWarningsToExceptions="true"
   processIsolation="false"
   stopOnFailure="false"
-  syntaxCheck="false"
   stderr="true"
   >
   <testsuites>
-    <testsuite>
+    <testsuite name="phpstream test">
       <directory>test</directory>
     </testsuite>
   </testsuites>

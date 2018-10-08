@@ -1,3 +1,4 @@
 nbproject
 docs/api/phpdoc-cache-*
 
+/vendor/

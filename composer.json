@@ -17,5 +17,11 @@
         "psr-4": {
             "phpstream\\": "src/phpstream"
         }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7"
+    },
+	"scripts": {
+        "test": "phpunit"
     }
 }
