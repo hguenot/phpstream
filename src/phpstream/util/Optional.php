@@ -329,7 +329,8 @@ class Present extends Optional
      */
 	public function map($mapper)
     {
-        return Optional::fromNullable((new MapOperator($mapper))->execute($this->reference));
+	    $stopExecution = false;
+	    return Optional::fromNullable((new MapOperator($mapper))->execute($this->reference, $stopExecution));
     }
 
     /**

@@ -41,8 +41,8 @@ class SkipOperator extends AbstractOperator {
 	 * 
 	 * @return mixed Collected value if limit has not been reached.
 	 */
-	public function execute($value, &$stopPropagation) {
-		if ($this->current < $this->limit){
+	public function execute($value, bool &$stopPropagation = null) {
+		if ($this->current < $this->limit && $stopPropagation !== true){
 			$this->current++;
 			$stopPropagation = true;
 		}

@@ -59,8 +59,8 @@ class FilterOperator extends AbstractOperator {
 	 * 
 	 * @throws \LogicException If it was called but $stopPropagation already set to `FALSE`
 	 */
-	public function execute($value, &$stopPropagation) {
-		if (!$stopPropagation) {
+	public function execute($value, ?bool &$stopPropagation = null) {
+		if ($stopPropagation !== true) {
 			$stopPropagation = $this->func !== null ?
 				!$this->func->apply($value) : 
 				!call_user_func($this->callable, $value);
@@ -68,7 +68,7 @@ class FilterOperator extends AbstractOperator {
 			throw new \LogicException('Propagation has been stopped before this call.');
 		}
 		
-		return $stopPropagation ? null : $value;
+		return $stopPropagation === false ? null : $value;
 	}
 
 }

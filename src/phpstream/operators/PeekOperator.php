@@ -39,6 +39,16 @@ class PeekOperator extends AbstractOperator {
 			$this->func = $fn;
 		} else if (is_callable($fn)) {
 			$this->callable = $fn;
+		} else if (is_string($fn)) {
+		    $this->callable = function ($obj) use ($fn) {
+		        if (property_exists($obj, $fn))
+                    return $obj->{$fn};
+                else if (method_exists($obj, $fn))
+                    return call_user_func([$obj, $fn]);
+                else
+                    throw new \InvalidArgumentException($fn . ' is not a property or a method of '
+                            . (is_object($obj) ? get_class($obj) : gettype($obj)));
+		    };
 		} else {
 			throw new \InvalidArgumentException('Parameter must be callable or UnaryFunction.');
 		}
@@ -54,8 +64,8 @@ class PeekOperator extends AbstractOperator {
 	 * 
 	 * @throws \LogicException If it was called but $stopPropagation already set to `FALSE`.
 	 */
-	public function execute($value, &$stopPropagation) {
-		if (!$stopPropagation) {
+	public function execute($value, bool &$stopPropagation = null) {
+		if ($stopPropagation !== true) {
 			$this->func !== null ?
 				$this->func->apply($value) : 
 				call_user_func($this->callable, $value);

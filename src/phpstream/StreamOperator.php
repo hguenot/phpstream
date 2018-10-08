@@ -24,7 +24,7 @@ interface StreamOperator {
 	 * 
 	 * @return mixed The (new) elemnt computed by the operator.
 	 */
-	public function execute($value, &$stopPropagation);
+	public function execute($value, ?bool &$stopPropagation = null);
 	
 	/**
 	 * Reset the operator to his initial state
