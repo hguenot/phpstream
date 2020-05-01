@@ -1,8 +1,12 @@
 nbproject
 docs/api/phpdoc-cache-*
+docs/coverage
 /vendor/
 coverage.xml
 .settings
 .buildpath
 .project
 composer.lock
+test-report.xml
+yarn.lock
+*.iml

@@ -1,51 +1,35 @@
 <?php
-
 /**
- * First element collector.
- * 
  * @copyright Copyright (c) 2015 Hervé Guenot
  * @license https://github.com/hguenot/phpstream/blob/master/LICENSE The MIT License (MIT)
- * @link https://github.com/hguenot/phpstream#readme Readme
+ * @readme https://github.com/hguenot/phpstream#php-stream
  */
 namespace phpstream\collectors;
 
 use phpstream\util\Optional;
 
 /**
- * Collects the first element of the stream processing.
+ * Returns the first element of the list if exists.
  */
-class FirstCollector extends AbstractCollector {
-
-	/** @var Optional Collected element ({@see Optional::absent()} if none). */
-	private $optional;
-
+class FirstCollector implements StreamCollector {
 	/**
-	 * Collects the first element of the stream processing.
+	 * @param iterable $iterable The list of elements
 	 *
-	 * @param mixed $key
-	 *        	Key value in the initial array (<em>array index</em>)
-	 * @param mixed $value
-	 *        	Value after processing
+	 * @return Optional The first element of the list if exists.
 	 */
-	public function collect($key, $value) {
-		if ($this->optional->isEmpty()) {
-			$this->optional = Optional::of($value);
+	public function collect(iterable $iterable): Optional {
+		$optional = Optional::absent();
+		$found = false;
+
+		foreach ($iterable as $value) {
+			if (!$found) {
+				$optional = Optional::ofNullable($value);
+				$found = true;
+			}
 		}
+
+		return $optional;
 	}
 
-	/**
-	 * Returns the collected element.
-	 *
-	 * @return Optional The collected element {@see Optional::absent()} if none.
-	 */
-	public function get() {
-		return $this->optional;
-	}
 
-	/**
-	 * Remove the collected element.
-	 */
-	public function reset() {
-		$this->optional = Optional::absent();
-	}
 }

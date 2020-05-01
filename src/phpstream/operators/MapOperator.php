@@ -1,77 +1,102 @@
 <?php
-
 /**
- * MapOperator definition.
- * 
  * @copyright Copyright (c) 2015 Hervé Guenot
  * @license https://github.com/hguenot/phpstream/blob/master/LICENSE The MIT License (MIT)
- * @link https://github.com/hguenot/phpstream#readme Readme
+ * @readme https://github.com/hguenot/phpstream#php-stream
  */
 namespace phpstream\operators;
 
+use InvalidArgumentException;
 use phpstream\functions\UnaryFunction;
 
 /**
  * Converts input value into another value
  */
-class MapOperator extends AbstractOperator {
+class MapOperator implements StreamOperator {
 
-	/** @var callable Function to call. */
-	private $callable;
+	/**
+	 * Function used to map each value during the streaming process.
+	 * It should take one argument (value in the collection) and returns any type of value (`function(mixed $value): mixed`)
+	 * @var callable $_callable
+	 * @internal
+	 */
+	private $_callable;
 
-	/** @var UnaryFunction Function to apply. */
-	private $func;
+	/**
+	 * Function object used to map each value during the streaming process.
+	 * The implemented UnaryFunction::apply should return any type of value
+	 * @var UnaryFunction $_function.
+	 * @internal
+	 */
+	private $_function;
 
 	/**
 	 * Creates a new MapOperator using the given function.
 	 *
-	 * Mapping function must take the vcollected value and return a new value. This new value will replace
-	 * the current value for the rest of process.
+	 * If parameter is a callable, the function should take one argument (value in the collection) and returns another value
+	 * (`function(mixed $value): mixed`).
+	 * If parameter is an UnaryFunction, the implemented UnaryFunction::apply should return the mapped value.
+	 * If parameter is a string, the process will use the corresponding property (or method if property does not exist) for getting
+	 * the mapped value.
 	 *
-	 * @param callable|UnaryFunction $fn
-	 *        	Mapping function.
+	 * The returned value will replace the current value for the rest of process.
+	 *
+	 * @param callable|UnaryFunction|string $fn Mapping function. If function is a string, use object property or method as mapper.
 	 *        	
-	 * @throws \InvalidArgumentException If parameter type is not valid.
+	 * @throws InvalidArgumentException If parameter type is not valid.
 	 */
 	public function __construct($fn) {
-		parent::__construct();
-		if ($fn instanceof MapOperator) {
-			$this->func = $fn->func;
-			$this->callable = $fn->callable;
-		} else if ($fn instanceof UnaryFunction) {
-			$this->func = $fn;
-		} else if (is_callable($fn)) {
-			$this->callable = $fn;
-		} else if (is_string($fn)) {
-			$this->callable = function ($obj) use ($fn) {
-				if (property_exists($obj, $fn))
-					return $obj->{$fn};
-				else if (method_exists($obj, $fn))
-					return call_user_func([$obj, $fn]);
-				else
-					throw new \InvalidArgumentException($fn . ' is not a property or a method of ' . (is_object($obj) ? get_class($obj) : gettype($obj)));
-			};
+		[$this->_function, $this->_callable] = self::getFn($fn);
+	}
+
+	/**
+	 * The method returns an `iterable` of the converted elements using the mapping function.
+	 *
+	 * @param iterable $values Values to filter.
+	 *
+	 * @return iterable The mapped values.
+	 */
+	public function execute(iterable $values): iterable {
+		if ($this->_function !== null) {
+			foreach ($values as $key => $value) {
+				yield $key => $this->_function->apply($value);
+			}
 		} else {
-			throw new \InvalidArgumentException('Parameter must be callable or UnaryFunction.');
+			foreach ($values as $key => $value) {
+				yield $key => call_user_func($this->_callable, $value);
+			}
 		}
 	}
 
 	/**
-	 * The method returns the element converter using the mapping function.
+	 * @param callable|UnaryFunction|MapOperator|string $fn Mapping function. If function is a string, use object property or method as mapper
 	 *
-	 * @param mixed $value
-	 *        	Element to convert.
-	 * @param boolean $stopPropagation
-	 *        	Boolean used to stop element processing.
-	 *        	
-	 * @return mixed The converted element.
-	 *        
-	 * @throws \LogicException If it was called but $stopPropagation already set to `FALSE`.
+	 * @return array [?UnaryFunction, ?callable]
+	 *
+	 * @ignore
+	 * @internal
 	 */
-	public function execute($value, ?bool &$stopPropagation = null) {
-		if ($stopPropagation !== true) {
-			return $this->func !== null ? $this->func->apply($value) : call_user_func($this->callable, $value);
+	public static function getFn($fn) {
+		if ($fn instanceof MapOperator) {
+			return [$fn->_function, $fn->_callable];
+		} else if ($fn instanceof UnaryFunction) {
+			return [$fn, null];
+		} else if (is_callable($fn)) {
+			return [null, $fn];
+		} else if (is_string($fn)) {
+			return [null, function ($obj) use ($fn) {
+				if (!is_object($obj))
+					throw new InvalidArgumentException(gettype($obj) . ' is not an object, ' . $fn . ' could not be applied.');
+				else if (property_exists($obj, $fn))
+					return $obj->{$fn};
+				else if (method_exists($obj, $fn))
+					return call_user_func([$obj, $fn]);
+				else
+					throw new InvalidArgumentException($fn . ' is not a property or a method of ' . get_class($obj));
+			}];
+		} else {
+			throw new InvalidArgumentException('Parameter must be callable or UnaryFunction.');
 		}
-		throw new \LogicException('Propagation has been stopped before this call.');
 	}
+
 }

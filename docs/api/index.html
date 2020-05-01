@@ -1,305 +1,134 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
-    <meta charset="utf-8"/>
-    <title>API Documentation</title>
-    <meta name="author" content=""/>
-    <meta name="description" content=""/>
-
-    <link href="css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
-    <link href="css/font-awesome.min.css" rel="stylesheet">
-    <link href="css/prism.css" rel="stylesheet" media="all"/>
-    <link href="css/template.css" rel="stylesheet" media="all"/>
-    
-    <!--[if lt IE 9]>
-    <script src="js/html5.js"></script>
-    <![endif]-->
-    <script src="js/jquery-1.11.0.min.js"></script>
-    <script src="js/ui/1.10.4/jquery-ui.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/jquery.smooth-scroll.js"></script>
-    <script src="js/prism.min.js"></script>
-    <!-- TODO: Add http://jscrollpane.kelvinluck.com/ to style the scrollbars for browsers not using webkit-->
-    
-    <link rel="shortcut icon" href="images/favicon.ico"/>
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png"/>
-    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png"/>
-    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png"/>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.18"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PHP Stream: PHP Stream</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-
-<div class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container">
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <i class="icon-ellipsis-vertical"></i>
-            </a>
-            <a class="brand" href="index.html">API Documentation</a>
-
-            <div class="nav-collapse">
-                <ul class="nav pull-right">
-                                        <li class="dropdown">
-                        <a href="index.html" class="dropdown-toggle" data-toggle="dropdown">
-                            API Documentation <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                                                        <li><a href="namespaces/phpstream.html">\phpstream</a></li>
-                                                    </ul>
-                    </li>
-                                        <li class="dropdown" id="charts-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            Charts <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="graphs/class.html">
-                                    <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="dropdown" id="reports-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            Reports <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="reports/errors.html">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">0</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="reports/markers.html">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Markers <span class="label label-info pull-right">0</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="reports/deprecated.html">
-                                                                                                            <i class="icon-list-alt"></i>&#160;Deprecated <span class="label label-info pull-right">0</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <!--<div class="go_to_top">-->
-    <!--<a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>-->
-    <!--</div>-->
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">PHP Stream
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generated by Doxygen 1.8.18 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('',true,false,'search.php','Search');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
 </div>
 
-<div id="___" class="container-fluid">
-        <section class="row-fluid">
-        <div class="span2 sidebar">
-                                <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1390558158"></a>
-                                <a href="namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
-            </div>
-            <div id="namespace-1390558158" class="accordion-body collapse in">
-                <div class="accordion-inner">
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-2146532438"></a>
-                                <a href="namespaces/phpstream.html" style="margin-left: 30px; padding-left: 0">phpstream</a>
-            </div>
-            <div id="namespace-2146532438" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1672263796"></a>
-                                <a href="namespaces/phpstream.collectors.html" style="margin-left: 30px; padding-left: 0">collectors</a>
-            </div>
-            <div id="namespace-1672263796" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="classes/phpstream.collectors.AbstractCollector.html">AbstractCollector</a></li>
-                                                    <li class="class"><a href="classes/phpstream.collectors.AnyCollector.html">AnyCollector</a></li>
-                                                    <li class="class"><a href="classes/phpstream.collectors.DistinctCollector.html">DistinctCollector</a></li>
-                                                    <li class="class"><a href="classes/phpstream.collectors.FirstCollector.html">FirstCollector</a></li>
-                                                    <li class="class"><a href="classes/phpstream.collectors.ListCollector.html">ListCollector</a></li>
-                                                    <li class="class"><a href="classes/phpstream.collectors.MapCollector.html">MapCollector</a></li>
-                                                    <li class="class"><a href="classes/phpstream.collectors.MaxCollector.html">MaxCollector</a></li>
-                                                    <li class="class"><a href="classes/phpstream.collectors.MinCollector.html">MinCollector</a></li>
-                                                    <li class="class"><a href="classes/phpstream.collectors.ReduceCollector.html">ReduceCollector</a></li>
-                                                    <li class="class"><a href="classes/phpstream.collectors.SumCollector.html">SumCollector</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-340041182"></a>
-                                <a href="namespaces/phpstream.functions.html" style="margin-left: 30px; padding-left: 0">functions</a>
-            </div>
-            <div id="namespace-340041182" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                    <li class="interface"><a href="classes/phpstream.functions.BiFunction.html">BiFunction</a></li>
-                                                    <li class="interface"><a href="classes/phpstream.functions.UnaryFunction.html">UnaryFunction</a></li>
-                                                                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1815600130"></a>
-                                <a href="namespaces/phpstream.operators.html" style="margin-left: 30px; padding-left: 0">operators</a>
-            </div>
-            <div id="namespace-1815600130" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="classes/phpstream.operators.AbstractOperator.html">AbstractOperator</a></li>
-                                                    <li class="class"><a href="classes/phpstream.operators.FilterOperator.html">FilterOperator</a></li>
-                                                    <li class="class"><a href="classes/phpstream.operators.LimitOperator.html">LimitOperator</a></li>
-                                                    <li class="class"><a href="classes/phpstream.operators.MapOperator.html">MapOperator</a></li>
-                                                    <li class="class"><a href="classes/phpstream.operators.PeekOperator.html">PeekOperator</a></li>
-                                                    <li class="class"><a href="classes/phpstream.operators.SkipOperator.html">SkipOperator</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-486904197"></a>
-                                <a href="namespaces/phpstream.util.html" style="margin-left: 30px; padding-left: 0">util</a>
-            </div>
-            <div id="namespace-486904197" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                    <li class="interface"><a href="classes/phpstream.util.Comparator.html">Comparator</a></li>
-                                                                                                    <li class="class"><a href="classes/phpstream.util.Absent.html">Absent</a></li>
-                                                    <li class="class"><a href="classes/phpstream.util.Optional.html">Optional</a></li>
-                                                    <li class="class"><a href="classes/phpstream.util.Present.html">Present</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                    
-                    <ul>
-                                                    <li class="interface"><a href="classes/phpstream.StreamCollector.html">StreamCollector</a></li>
-                                                    <li class="interface"><a href="classes/phpstream.StreamOperator.html">StreamOperator</a></li>
-                                                                                                    <li class="class"><a href="classes/phpstream.Stream.html">Stream</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                    
-                    <ul>
-                                                                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-        </div>
-    </section>
-    <section class="row-fluid">
-        <div class="span10 offset2">
-            <div class="row-fluid">
-                <div class="span8 content namespace">
-                    <nav>
-                                                
-                                            </nav>
-                    <h1><small></small>\</h1>
-
-                                        <h2>Namespaces</h2>
-                    <table class="table table-hover">
-                                                    <tr>
-                                <td><a href="namespaces/phpstream.html">phpstream</a></td>
-                            </tr>
-                                            </table>
-                    
-                    
-                    
-                                    </div>
-
-                <aside class="span4 detailsbar">
-                    <dl>
-                        <dt>Namespace hierarchy</dt>
-                        <dd class="hierarchy">
-                                                                                                                                                <div class="namespace-wrapper">\</div>
-                        </dd>
-                    </dl>
-                </aside>
-            </div>
-
-            
-            
-        </div>
-    </section>
-
-    <footer class="row-fluid">
-        <section class="span10 offset2">
-            <section class="row-fluid">
-                <section class="span10 offset1">
-                    <section class="row-fluid footer-sections">
-                        <section class="span4">
-                                                        <h1><i class="icon-code"></i></h1>
-                            <div>
-                                <ul>
-                                                                            <li><a href="namespaces/phpstream.html">\phpstream</a></li>
-                                                                    </ul>
-                            </div>
-                        </section>
-                        <section class="span4">
-                                                        <h1><i class="icon-bar-chart"></i></h1>
-                            <div>
-                                <ul>
-                                    <li><a href="graphs/class.html">Class Hierarchy Diagram</a></li>
-                                </ul>
-                            </div>
-                        </section>
-                        <section class="span4">
-                                                        <h1><i class="icon-pushpin"></i></h1>
-                            <div>
-                                <ul>
-                                    <li><a href="reports/errors.html">Errors</a></li>
-                                    <li><a href="reports/markers.html">Markers</a></li>
-                                </ul>
-                            </div>
-                        </section>
-                    </section>
-                </section>
-            </section>
-            <section class="row-fluid">
-                <section class="span10 offset1">
-                    <hr />
-                    Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on September 21st, 2015 at 22:35.
-                </section>
-            </section>
-        </section>
-    </footer>
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
 </div>
 
+<div class="PageDoc"><div class="header">
+  <div class="headertitle">
+<div class="title">PHP Stream </div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><p><a class="anchor" id="md_README"></a> PHP Stream is a basic port of new <a href="http://www.oracle.com/technetwork/articles/java/ma14-java-se-8-streams-2177646.html">Java Stream API</a> in PHP.</p>
+<p>This library could be used to filter, convert or reduce any array.</p>
+<h1><a class="anchor" id="autotoc_md0"></a>
+Continuous integration</h1>
+<p><a href="https://travis-ci.org/hguenot/phpstream"><img src="https://travis-ci.org/hguenot/phpstream.svg" alt="Build Status" style="pointer-events: none;" class="inline"/></a> <a href="https://codecov.io/github/hguenot/phpstream"><img src="https://img.shields.io/codecov/c/github/hguenot/phpstream.svg" alt="Code coverage" style="pointer-events: none;" class="inline"/></a> <a href="https://github.com/hguenot/phpstream/releases"><img src="https://img.shields.io/github/release/hguenot/phpstream.svg" alt="GitHub version" style="pointer-events: none;" class="inline"/></a> <a href="https://packagist.org/packages/hguenot/phpstream"><img src="https://img.shields.io/packagist/v/hguenot/phpstream.svg" alt="Packagist version" style="pointer-events: none;" class="inline"/></a></p>
+<h1><a class="anchor" id="autotoc_md1"></a>
+Installation</h1>
+<p>The preferred way to install this extension is through <a href="http://getcomposer.org/download/">composer</a>.</p>
+<p>Either run</p>
+<div class="fragment"><div class="line">php composer.phar require --prefer-dist hguenot/phpstream &quot;*&quot;</div>
+</div><!-- fragment --><p>or add</p>
+<div class="fragment"><div class="line">&quot;hguenot/phpstream&quot;: &quot;*&quot;</div>
+</div><!-- fragment --><p>to the require section of your <code>composer.json</code> file.</p>
+<h1><a class="anchor" id="autotoc_md2"></a>
+Usage</h1>
+<ul>
+<li>Here is a basic usage of this library.</li>
+</ul>
+<div class="fragment"><div class="line"><span class="comment">// Create a simple array of data</span></div>
+<div class="line">$array = [ -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Creates a Stream based on the previous array</span></div>
+<div class="line">$stream = new \phpstream\Stream($array);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Compute the opposite value of each value</span></div>
+<div class="line">$stream = $stream-&gt;map(<span class="keyword">function</span>($value){</div>
+<div class="line">    <span class="keywordflow">return</span> intval($value) * (-1);</div>
+<div class="line">});</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Get only odd values</span></div>
+<div class="line">$stream = $stream-&gt;filter(<span class="keyword">function</span>($value){</div>
+<div class="line">    <span class="keywordflow">return</span> (intval($value) % 2) == 0;</div>
+<div class="line">});</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Collects data into an array</span></div>
+<div class="line">$new_array = $stream-&gt;collect(<span class="keyword">new</span> \<a class="code" href="namespacephpstream.html">phpstream</a>\collectors\ListCollector());</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Computes sum of all elements</span></div>
+<div class="line">$sum = $stream-&gt;reduce(<span class="keyword">function</span>($a, $b){</div>
+<div class="line">    <span class="keywordflow">return</span> intval($a) + intval($b);</div>
+<div class="line">}, 0);</div>
+</div><!-- fragment --><ul>
+<li>All stream operations can be chained :</li>
+</ul>
+<div class="fragment"><div class="line">$sum = <a class="code" href="classphpstream_1_1Stream.html#a87d9eca03ad86282c391babbadfbb673">\phpstream\Stream::of</a>($array)</div>
+<div class="line">    -&gt;map(<span class="keyword">function</span>($value){</div>
+<div class="line">        <span class="keywordflow">return</span> intval($value) * (-1);</div>
+<div class="line">    })</div>
+<div class="line">    -&gt;filter(<span class="keyword">function</span>($value){</div>
+<div class="line">        <span class="keywordflow">return</span> (intval($value) % 2) == 0;</div>
+<div class="line">    })</div>
+<div class="line">    -&gt;reduce(<span class="keyword">function</span>($a, $b){</div>
+<div class="line">        <span class="keywordflow">return</span> intval($a) + intval($b);</div>
+<div class="line">    }, 0);</div>
+</div><!-- fragment --><p>You can find more examples on PHPUnit test. </p>
+</div></div><!-- PageDoc -->
+</div><!-- contents -->
+<div class="ttc" id="anamespacephpstream_html"><div class="ttname"><a href="namespacephpstream.html">phpstream</a></div></div>
+<div class="ttc" id="aclassphpstream_1_1Stream_html_a87d9eca03ad86282c391babbadfbb673"><div class="ttname"><a href="classphpstream_1_1Stream.html#a87d9eca03ad86282c391babbadfbb673">phpstream\Stream\of</a></div><div class="ttdeci">static of(iterable $iterable=[], bool $inMemory=true)</div><div class="ttdef"><b>Definition:</b> Stream.php:43</div></div>
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Generated by &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.18
+</small></address>
 </body>
 </html>

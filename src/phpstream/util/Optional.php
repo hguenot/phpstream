@@ -1,14 +1,15 @@
 <?php
-
 /**
- * Optional utility class.
- *
  * @copyright Copyright (c) 2015 Hervé Guenot
  * @license https://github.com/hguenot/phpstream/blob/master/LICENSE The MIT License (MIT)
- * @link https://github.com/hguenot/phpstream#readme Readme
+ * @readme https://github.com/hguenot/phpstream#php-stream
  */
 namespace phpstream\util;
 
+use BadMethodCallException;
+use Exception;
+use InvalidArgumentException;
+use phpstream\functions\UnaryFunction;
 use phpstream\operators\MapOperator;
 
 /**
@@ -35,12 +36,11 @@ abstract class Optional {
 	/**
 	 * Returns an Optional instance containing the given non-null reference.
 	 *
-	 * @param mixed $reference
-	 *        	Non-null reference to store.
+	 * @param mixed $reference Non-null reference to store.
 	 *        	
 	 * @return Optional An Optional instance containing the given reference.
 	 *        
-	 * @throws \InvalidArgumentException if given reference is null.
+	 * @throws InvalidArgumentException if given reference is null.
 	 */
 	public static function of($reference) {
 		if ($reference instanceof Optional)
@@ -53,12 +53,11 @@ abstract class Optional {
 	 * Returns an empty Optional instance if given reference is null, an Optional instance containing
 	 * the given reference otherwise.
 	 *
-	 * @param mixed $reference
-	 *        	Non-null reference to store.
+	 * @param mixed $reference Reference to store.
 	 *        	
 	 * @return Optional An empty Optional instance or an Optional instance containing the given reference.
 	 */
-	public static function fromNullable($reference) {
+	public static function ofNullable($reference) {
 		if ($reference instanceof Optional)
 			return $reference;
 
@@ -86,40 +85,40 @@ abstract class Optional {
 	 *
 	 * @return mixed The contained reference for a non empty Optional instance.
 	 *        
-	 * @throws \BadMethodCallException If the current Optional instance is empty.
+	 * @throws BadMethodCallException If the current Optional instance is empty.
 	 */
 	public abstract function get();
 
 	/**
 	 * Applying mapper on contained reference and return a new Optional element.
 	 *
-	 * @return Optional Optional instance containig mapped value or Absent.
+	 * @param callable|UnaryFunction|MapOperator $mapper Mapping function. If function is a string, use object property or method as mapper.
+	 *
+	 * @return Optional Optional instance containing mapped value or Absent.
 	 */
 	public abstract function map($mapper);
 
 	/**
 	 * Returns the contained reference for a non empty Optional instance, the not-null default value otherwise.
 	 *
-	 * @param mixed $defaultValue
-	 *        	The default value.
+	 * @param mixed $defaultValue The default value.
 	 *        	
 	 * @return mixed The contained reference for a non empty Optional instance or the default value.
 	 *        
-	 * @throws \InvalidArgumentException if default value is null.
+	 * @throws InvalidArgumentException if default value is null.
 	 */
 	public abstract function orElse($defaultValue);
 
 	/**
 	 * Returns the contained reference for a non empty Optional instance, throw given exception otherwise.
 	 *
-	 * @param \Exception $ex
-	 *        	The exception to throw if empty
+	 * @param Exception $ex The exception to throw if empty
 	 *        	
 	 * @return mixed The contained reference for a non empty Optional instance or the default value.
 	 *        
-	 * @throws \Exception if default value is null.
+	 * @throws Exception if default value is null.
 	 */
-	public abstract function orElseThrow(\Exception $ex);
+	public abstract function orElseThrow(Exception $ex);
 
 	/**
 	 * Returns the contained reference for a non empty Optional instance, null otherwise.
@@ -131,8 +130,8 @@ abstract class Optional {
 	/**
 	 * Checks if current instance and given Optional instance contains same object.
 	 *
-	 * @param mixed $object
-	 *        	Other object
+	 * @param mixed $object Other object
+	 *
 	 * @return boolean `TRUE` if current instance and given Optional instance contains same object, `FALSE` otherwise.
 	 *        
 	 * @ignore
@@ -142,22 +141,20 @@ abstract class Optional {
 	/**
 	 * Make sure the passed reference is not null.
 	 *
-	 * @param mixed $reference
-	 *        	Reference to test.
-	 * @param string $message
-	 *        	Error message if reference is null
+	 * @param mixed $reference Reference to test.
+	 * @param string $message Error message if reference is null
 	 *        	
 	 * @return mixed
 	 *
-	 * @throws \InvalidArgumentException If reference is null.
+	 * @throws InvalidArgumentException If reference is null.
 	 */
 	protected static function checkNotNull($reference, $message = null) {
 		if ($message === null) {
-			$message = "Unallowed null in reference found.";
+			$message = "Disallowed null in reference found.";
 		}
 
 		if ($reference === null) {
-			throw new \InvalidArgumentException($message);
+			throw new InvalidArgumentException($message);
 		}
 		return $reference;
 	}
@@ -176,7 +173,9 @@ class Absent extends Optional {
 	/**
 	 * Private constructor (Singleton pattern)
 	 */
-	protected function __construct() {}
+	protected function __construct() {
+		parent::__construct();
+	}
 
 	/**
 	 * Always returns true.
@@ -190,16 +189,18 @@ class Absent extends Optional {
 	/**
 	 * Always raise an exception.
 	 *
-	 * @throws \BadMethodCallException Always.
+	 * @throws BadMethodCallException Always.
 	 */
 	public function get() {
-		throw new \BadMethodCallException("Optional->get() cannot be called on an absent value");
+		throw new BadMethodCallException("Optional->get() cannot be called on an absent value");
 	}
 
 	/**
 	 * Always returns current instance
 	 *
-	 * @return Optional Optional instance containig mapped value or Absent.
+	 * @param callable|UnaryFunction|MapOperator $mapper Mapping function. If function is a string, use object property or method as mapper.
+	 *
+	 * @return Optional Optional instance containing mapped value or Absent.
 	 */
 	public function map($mapper) {
 		return $this;
@@ -208,12 +209,11 @@ class Absent extends Optional {
 	/**
 	 * Always returns the non-null default value.
 	 *
-	 * @param mixed $defaultValue
-	 *        	The default value.
+	 * @param mixed $defaultValue The default value.
 	 *        	
 	 * @return mixed The non-null default value
 	 *        
-	 * @throws \InvalidArgumentException if default value is null.
+	 * @throws InvalidArgumentException if default value is null.
 	 */
 	public function orElse($defaultValue) {
 		$message = "use Optional->orNull() instead of Optional->or(null)";
@@ -223,13 +223,13 @@ class Absent extends Optional {
 	/**
 	 * Always throws given exception.
 	 *
-	 * @param \Exception $ex
+	 * @param Exception $ex Exception to throw
 	 *
-	 * @return mixed
+	 * @return mixed Unused
 	 *
-	 * @throws \Exception
+	 * @throws Exception Given exception
 	 */
-	public function orElseThrow(\Exception $ex) {
+	public function orElseThrow(Exception $ex) {
 		throw $ex;
 	}
 
@@ -245,8 +245,7 @@ class Absent extends Optional {
 	/**
 	 * Checks the given object is the Singleton instance.
 	 *
-	 * @param Optional $object
-	 *        	Any other optional instance.
+	 * @param Optional $object Any other optional instance.
 	 *        	
 	 * @return boolean `TRUE` if the given object is the Singleton instance, `FALSE` otherwise.
 	 *        
@@ -276,17 +275,21 @@ class Absent extends Optional {
  */
 class Present extends Optional {
 
-	/** @var mixed Stored reference. */
-	private $reference;
+	/**
+	 * Stored reference.
+	 *
+	 * @var mixed $_reference
+	 */
+	private $_reference;
 
 	/**
 	 * Construct a new Optional with the given reference.
 	 *
-	 * @param mixed $reference
-	 *        	Reference to store
+	 * @param mixed $reference Reference to store
 	 */
 	protected function __construct($reference) {
-		$this->reference = $reference;
+		parent::__construct();
+		$this->_reference = $reference;
 	}
 
 	/**
@@ -304,47 +307,52 @@ class Present extends Optional {
 	 * @return mixed The stored reference.
 	 */
 	public function get() {
-		return $this->reference;
+		return $this->_reference;
 	}
 
 	/**
 	 * Applying mapper on contained reference and return a new Optional element.
 	 *
-	 * @return Optional Optional instance containig mapped value or Absent.
+	 * @param callable|UnaryFunction|MapOperator|string $mapper Mapping function. If function is a string, use object property or method as mapper.
+	 *
+	 * @return Optional Optional instance containing mapped value or Absent.
 	 */
-	public function map($mapper) {
-		$stopExecution = false;
-		return Optional::fromNullable((new MapOperator($mapper))->execute($this->reference, $stopExecution));
+	public function map($mapper): Optional {
+		/* @var UnaryFunction $function */
+		/* @var callable $callable */
+		[$function, $callable] = MapOperator::getFn($mapper);
+
+		return Optional::ofNullable($function
+				? $function->apply($this->_reference)
+				: $callable($this->_reference));
 	}
 
 	/**
 	 * Always returns the stored reference.
 	 *
-	 * @param mixed $defaultValue
-	 *        	The default value.
+	 * @param mixed $defaultValue The default value.
 	 *        	
 	 * @return mixed The stored reference.
 	 *        
-	 * @throws \InvalidArgumentException if default value is null.
+	 * @throws InvalidArgumentException if default value is null.
 	 */
 	public function orElse($defaultValue) {
 		$message = "use Optional->orNull() instead of Optional->or(null)";
 		static::checkNotNull($defaultValue, $message);
-		return $this->reference;
+		return $this->_reference;
 	}
 
 	/**
 	 * Always returns the stored reference.
 	 *
-	 * @param \Exception $ex
-	 *        	Unused
+	 * @param Exception $ex Unused
 	 *        	
 	 * @return mixed The stored reference.
 	 *        
-	 * @throws \InvalidArgumentException if default value is null.
+	 * @throws InvalidArgumentException if default value is null.
 	 */
-	public function orElseThrow(\Exception $ex) {
-		return $this->reference;
+	public function orElseThrow(Exception $ex) {
+		return $this->_reference;
 	}
 
 	/**
@@ -353,21 +361,21 @@ class Present extends Optional {
 	 * @return mixed The stored reference.
 	 */
 	public function orNull() {
-		return $this->reference;
+		return $this->_reference;
 	}
 
 	/**
 	 * Checks if current instance and given Optional instance contains same object.
 	 *
-	 * @param mixed $object
-	 *        	Other object to compare
+	 * @param mixed $object Other object to compare
+	 *
 	 * @return bool `TRUE` if current instance and given Optional instance contains same object, `FALSE` otherwise.
 	 *        
 	 * @ignore
 	 */
 	public function equals($object) {
 		if ($object instanceof Present) {
-			return $this->reference === $object->get();
+			return $this->_reference === $object->get();
 		}
 		return false;
 	}
