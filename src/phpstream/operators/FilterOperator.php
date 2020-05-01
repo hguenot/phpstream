@@ -1,75 +1,93 @@
 <?php
-
 /**
- * FilterOperator definition.
- * 
  * @copyright Copyright (c) 2015 Hervé Guenot
  * @license https://github.com/hguenot/phpstream/blob/master/LICENSE The MIT License (MIT)
- * @link https://github.com/hguenot/phpstream#readme Readme
+ * @readme https://github.com/hguenot/phpstream#php-stream
  */
 namespace phpstream\operators;
 
+use InvalidArgumentException;
 use phpstream\functions\UnaryFunction;
 
 /**
- * A filter operator is used during the Stream Processor to chack if element could continue the process or not
+ * A filter operator is used during the Stream Processor to check if element could continue the process or not
  *
  * @internal Internal API process.
  */
-class FilterOperator extends AbstractOperator {
+class FilterOperator implements StreamOperator {
+	/**
+	 * Function used to filter each value during the streaming process.
+	 * It should take one argument (value in the collection) and returns a boolean (`function(mixed $value): bool`)
+	 * @var callable $_callable
+	 * @internal
+	 */
+	private $_callable;
 
-	/** @var callable Function to call. */
-	private $callable;
-
-	/** @var UnaryFunction Function to apply. */
-	private $func;
+	/**
+	 * Function object used to filter each value during the streaming process.
+	 * The implemented UnaryFunction::apply should return a boolean value
+	 * @var UnaryFunction $_function.
+	 * @internal
+	 */
+	private $_function;
 
 	/**
 	 * Construct a new operator with the filter function.
 	 *
-	 * The filter function must return `TRUE` (or something that PHP evaluates to `TRUE`) to lets the elements continue
-	 * the process.
+	 * If parameter is a callable, the function should take one argument (value in the collection) and returns a boolean
+	 * (`function(mixed $value): bool`)
+	 * If parameter is an UnaryFunction, the implemented UnaryFunction::apply should return a boolean value.
 	 *
-	 * @param callable|UnaryFunction $fn
-	 *        	The filter function.
-	 *        	
-	 * @throws \InvalidArgumentException If parameter is not callable or a UnaryFunction instance.
+	 * The value will be kept only if the return value of the filter method is considered as `true`
+	 *
+	 * @param callable|UnaryFunction $fn The filter function.
+	 *
+	 * @throws InvalidArgumentException If parameter is not callable or a UnaryFunction instance.
 	 */
 	public function __construct($fn) {
-		parent::__construct();
-		if ($fn instanceof FilterOperator) {
-			$this->func = $fn->func;
-		} else if ($fn instanceof UnaryFunction) {
-			$this->func = $fn;
-		} else if (is_callable($fn)) {
-			$this->callable = $fn;
+		[$this->_function, $this->_callable] = self::getFn($fn);
+	}
+
+	/**
+	 * The method returns an `iterable` of the filtered elements using the filter function.
+	 *
+	 * @param iterable $values Values to filter.
+	 *
+	 * @return iterable The filtered values.
+	 */
+	public function execute(iterable $values): iterable {
+		if ($this->_function !== null) {
+			foreach ($values as $key => $value) {
+				if ($this->_function->apply($value)) {
+					yield $key => $value;
+				}
+			}
 		} else {
-			throw new \InvalidArgumentException('Parameter must be callable or UnaryFunction.');
+			foreach ($values as $key => $value) {
+				if (call_user_func($this->_callable, $value)) {
+					yield $key => $value;
+				}
+			}
 		}
 	}
 
 	/**
-	 * Check if the element match the filter process.
+	 * @param callable|UnaryFunction|FilterOperator $fn The filter function.
 	 *
-	 * The method returns the element and set `$stopProcessing` to `TRUE` if it match; it returns `null` and set
-	 * `$stopProcessing` to `FALSE` if it doesn't.
+	 * @return array [?UnaryFunction, ?callable]
 	 *
-	 * @param mixed $value
-	 *        	Element to test.
-	 * @param boolean $stopPropagation
-	 *        	Boolean used to stop element processing.
-	 *        	
-	 * @return mixed The given element or `null`.
-	 *        
-	 * @throws \LogicException If it was called but $stopPropagation already set to `FALSE`
+	 * @ignore
+	 * @internal
 	 */
-	public function execute($value, ?bool &$stopPropagation = null) {
-		if ($stopPropagation !== true) {
-			$stopPropagation = $this->func !== null ? !$this->func->apply($value) : !call_user_func($this->callable, $value);
+	public static function getFn($fn) {
+		if ($fn instanceof FilterOperator) {
+			return [$fn->_function, $fn->_callable];
+		} else if ($fn instanceof UnaryFunction) {
+			return [$fn, null];
+		} else if (is_callable($fn)) {
+			return [null, $fn];
 		} else {
-			throw new \LogicException('Propagation has been stopped before this call.');
+			throw new InvalidArgumentException('Parameter must be callable or UnaryFunction.');
 		}
-
-		return $stopPropagation === true ? null : $value;
 	}
 }
