@@ -1,79 +1,91 @@
 <?php
-
 /**
- * PeekOperator definition.
- * 
  * @copyright Copyright (c) 2015 Hervé Guenot
  * @license https://github.com/hguenot/phpstream/blob/master/LICENSE The MIT License (MIT)
- * @link https://github.com/hguenot/phpstream#readme Readme
+ * @readme https://github.com/hguenot/phpstream#php-stream
  */
 namespace phpstream\operators;
 
+use InvalidArgumentException;
 use phpstream\functions\UnaryFunction;
 
 /**
  * A peek operator is used to call a function over ech element of the collection without altering it (i.e.
- * display
- * the acual value of the list.)
+ * display the actual value of the list.)
  */
-class PeekOperator extends AbstractOperator {
+class PeekOperator implements StreamOperator {
 
-	/** @var callable Function to call. */
-	private $callable;
+	/**
+	 * Function applied to each value during the streaming process.
+	 * It should take one argument (value in the collection) and returns nothing (`function(mixed $value): void`)
+	 * @var callable $_callable
+	 * @internal
+	 */
+	private $_callable;
 
-	/** @var UnaryFunction Function to apply. */
-	private $func;
+	/**
+	 * Function object applied to each value during the streaming process.
+	 * The implemented UnaryFunction::apply should return nothing
+	 * @var UnaryFunction $_function.
+	 * @internal
+	 */
+	private $_function;
 
 	/**
 	 * Creates a new peek operator enclosing the given function.
 	 *
-	 * The function mtakes one argument (the value) and returns nothing (the return result will be ignore).
+	 * If parameter is a callable, the function should take one argument (value in the collection) and returns nothing
+	 * (`function(mixed $value): void`).
+	 * If parameter is an UnaryFunction, the implemented UnaryFunction::apply should return nothing.
 	 *
-	 * @param callable|UnaryFunction $fn
-	 *        	The "do nothing" function.
+	 * The potential returned value of the "peeking" function will be ignored.
+	 *
+	 * @param callable|UnaryFunction $fn The "do nothing" function.
 	 *        	
-	 * @throws \InvalidArgumentException If function has a bad type.
+	 * @throws InvalidArgumentException If function has a bad type.
 	 */
 	public function __construct($fn) {
-		parent::__construct();
-		if ($fn instanceof PeekOperator) {
-			$this->func = $fn->func;
-			$this->callable = $fn->callable;
-		} else if ($fn instanceof UnaryFunction) {
-			$this->func = $fn;
-		} else if (is_callable($fn)) {
-			$this->callable = $fn;
-		} else if (is_string($fn)) {
-			$this->callable = function ($obj) use ($fn) {
-				if (property_exists($obj, $fn))
-					return $obj->{$fn};
-				else if (method_exists($obj, $fn))
-					return call_user_func([$obj, $fn]);
-				else
-					throw new \InvalidArgumentException($fn . ' is not a property or a method of ' . (is_object($obj) ? get_class($obj) : gettype($obj)));
-			};
+		[$this->_function, $this->_callable] = self::getFn($fn);
+	}
+
+	/**
+	 * The method call the "picking" function and returns an `iterable` of the initial elements.
+	 *
+	 * @param iterable $values Values to process.
+	 *
+	 * @return iterable The processed values.
+	 */
+	public function execute(iterable $values): iterable {
+		if ($this->_function !== null) {
+			foreach ($values as $key => $value) {
+				$this->_function->apply($value);
+				yield $key => $value;
+			}
 		} else {
-			throw new \InvalidArgumentException('Parameter must be callable or UnaryFunction.');
+			foreach ($values as $key => $value) {
+				call_user_func($this->_callable, $value);
+				yield $key => $value;
+			}
 		}
 	}
 
 	/**
-	 * Apply the function over each element of the function.
+	 * @param callable|UnaryFunction|PeekOperator $fn The filter function.
 	 *
-	 * @param mixed $value
-	 *        	The collected value.
-	 * @param boolean $stopPropagation
-	 *        	Boolean used to stop element processing.
-	 *        	
-	 * @return mixed The collected value.
-	 *        
-	 * @throws \LogicException If it was called but $stopPropagation already set to `FALSE`.
+	 * @return array [?UnaryFunction, ?callable]
+	 *
+	 * @ignore
+	 * @internal
 	 */
-	public function execute($value, bool &$stopPropagation = null) {
-		if ($stopPropagation !== true) {
-			$this->func !== null ? $this->func->apply($value) : call_user_func($this->callable, $value);
-			return $value;
+	public static function getFn($fn) {
+		if ($fn instanceof PeekOperator) {
+			return [$fn->_function, $fn->_callable];
+		} else if ($fn instanceof UnaryFunction) {
+			return [$fn, null];
+		} else if (is_callable($fn)) {
+			return [null, $fn];
+		} else {
+			throw new InvalidArgumentException('Parameter must be callable or UnaryFunction.');
 		}
-		throw new \LogicException('Propagation has been stopped before this call.');
 	}
 }

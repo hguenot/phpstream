@@ -1,98 +1,79 @@
 <?php
-
 /**
- * Stream class definition.
- * 
  * @copyright Copyright (c) 2015 Hervé Guenot
  * @license https://github.com/hguenot/phpstream/blob/master/LICENSE The MIT License (MIT)
- * @link https://github.com/hguenot/phpstream#readme Readme
+ * @readme https://github.com/hguenot/phpstream#php-stream
  */
 namespace phpstream;
 
-use phpstream\collectors\AnyCollector;
-use phpstream\collectors\DistinctCollector;
-use phpstream\collectors\FirstCollector;
-use phpstream\collectors\ListCollector;
-use phpstream\collectors\MapCollector;
-use phpstream\collectors\MaxCollector;
-use phpstream\collectors\MinCollector;
-use phpstream\collectors\ReduceCollector;
-use phpstream\collectors\SumCollector;
+use InvalidArgumentException;
+use phpstream\collectors\StreamCollector;
+use phpstream\functions\UnaryFunction;
+use phpstream\impl\GeneratorStream;
+use phpstream\impl\MemoryStream;
 use phpstream\operators\FilterOperator;
-use phpstream\operators\LimitOperator;
 use phpstream\operators\MapOperator;
-use phpstream\operators\PeekOperator;
-use phpstream\operators\SkipOperator;
+use phpstream\operators\StreamOperator;
 use phpstream\util\Comparator;
 use phpstream\util\Optional;
+/**
+ * @example 00-basic.php 6 33 Basic example
+ */
 
 /**
  * Stream class is the main class for stream processing which supports aggregate operations.
- * It claims to be a PHP port of the
- * <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html">Java Stream API</a>.
  *
- * To compute the result, a set of operations (filtering, maping) are applied over the initial array and the result
- * can be compute with a <em>terminal operation</em>.
+ * This version has globally 2 implementations :
  *
- * <strong>Example : </strong>
- *
- * @example ./docs/samples/00-basic.php 6 13 Basic example
- *         
+ * - MemoryStream : use native array function to perform operation. It requires more memory but is faster than the other implementation (this is the default).
+ * - GeneratorStream: use generators to perform operation. It requires less memory but has lower performance.
  */
-class Stream {
-
-	/** @var mixed[] initial array of values to be processed. */
-	private $array;
-
-	/** @var StreamOperator[] List of operators to apply. */
-	private $operators = [];
-
+abstract class Stream {
 	/**
-	 * Start a new Stream process over given array.
-	 * s
+	 * Construct a new Stream for performing array operations.
 	 *
-	 * @param array $array
-	 *        	Array on which apply stream process.
-	 *        	
-	 * @return \phpstream\Stream The new stream.
+	 * @param iterable $iterable Array or iterable on which perform operations
+	 * @param bool $inMemory Use in memory or not operation.
+	 *
+	 * @return Stream The stream processor
+	 *
+	 * {@see MemoryStream} for memory operation
+	 * {@see GeneratorStream} for generator version
 	 */
-	public static function of(array $array = []) {
-		return new Stream($array);
+	public static function of(iterable $iterable = [], bool $inMemory = true): Stream {
+		return $inMemory ? new MemoryStream(iterable_to_array($iterable, true)) : new GeneratorStream($iterable);
 	}
 
 	/**
-	 * Start a new Stream process over given array.
-	 * s
+	 * Concatenate multiple stream in one.
 	 *
-	 * @param array $arraysOrStreams
+	 * @param Stream|array $streams Streams or arrays to concatenate
 	 *
-	 * @return Stream The new stream.
+	 * @return Stream Stream processor for all parameters
 	 */
-	public static function concat(...$arraysOrStreams): Stream {
-		$array = [];
-		foreach ($arraysOrStreams as $arrayOrStream) {
-			if ($arrayOrStream instanceof Stream)
-				$arrayOrStream = $arrayOrStream->array;
+	public static function concat(... $streams): Stream {
+		return new GeneratorStream(self::_toIterable($streams));
+	}
 
-			if (!is_array($arrayOrStream))
-				throw new \InvalidArgumentException('Variable must be a PHP Stream or an array !');
-
-			foreach ($arrayOrStream as $key => $value) {
-				$array[$key] = $value;
+	/**
+	 * Build an iterable for all streams
+	 *
+	 * @param array $streams Streams or arrays to concatenate
+	 *
+	 * @return iterable The iterable of all concatenated streams or arrays
+	 */
+	private static function _toIterable(array $streams): iterable {
+		foreach ($streams as $stream) {
+			if (is_array($stream)) {
+				$stream = new MemoryStream($stream);
+			}
+			if (!($stream instanceof Stream)) {
+				throw new InvalidArgumentException("Stream parameters must be Stream or array instance.");
+			}
+			foreach ($stream->toIterable() as $key => $value) {
+				yield $key => $value;
 			}
 		}
-
-		return new Stream($array);
-	}
-
-	/**
-	 * Start a new Stream process over given array.
-	 *
-	 * @param array $array
-	 *        	Array on which apply stream process.
-	 */
-	public function __construct(array $array = []) {
-		$this->array = $array;
 	}
 
 	/**
@@ -101,307 +82,183 @@ class Stream {
 	 * corresponding to array value in the enclosing array. It must
 	 * return <tt>true</tt> if the element is valid, <tt>false</tt> otherwise.
 	 *
-	 * @param callable|functions\UnaryFunction $filter
-	 *        	Filtering callback function.
-	 *        	
-	 * @return Stream Current stream
+	 * @param callable|functions\UnaryFunction|FilterOperator $filter Filtering callback function.
+	 *
+	 * @return Stream Current stream.
 	 */
-	public function filter($filter) {
-		$this->addOperator(new FilterOperator($filter));
-		return $this;
-	}
+	public abstract function filter($filter): Stream;
 
 	/**
 	 * Maps each element of the enclosing array using function.
 	 *
-	 * @param callable|functions\UnaryFunction $mapper
-	 *        	Mapping function to call
-	 *        	
-	 * @return Stream Current stream
+	 * @param callable|functions\UnaryFunction $mapper Mapping function to call
+	 *
+	 * @return Stream Current stream.
 	 */
-	public function map($mapper) {
-		$this->addOperator(new MapOperator($mapper));
-		return $this;
-	}
+	public abstract function map($mapper): Stream;
 
 	/**
 	 * Maps each element of the enclosing array using function.
 	 *
-	 * @param callable|functions\UnaryFunction $mapper
-	 *        	Mapping function to call
-	 *        	
-	 * @return Stream Current stream
+	 * @param callable|functions\UnaryFunction $peekingFunction Mapping function to call
+	 *
+	 * @return Stream Current stream.
 	 */
-	public function peek($mapper) {
-		$this->addOperator(new PeekOperator($mapper));
-		return $this;
-	}
+	public abstract function peek($peekingFunction): Stream;
 
 	/**
 	 * Limits the number of result.
 	 *
-	 * @param int $limit
+	 * @param int $limit Number of results to keep.
 	 *
-	 * @return Stream Current stream
+	 * @return Stream Current stream.
 	 */
-	public function limit($limit) {
-		$this->addOperator(new LimitOperator($limit));
-		return $this;
-	}
+	public abstract function limit(int $limit): Stream;
 
 	/**
 	 * Skip the first result.
 	 *
-	 * @param int $limit
+	 * @param int $limit Number of elements to skip.
 	 *
-	 * @return Stream Current stream
+	 * @return Stream Current stream.
 	 */
-	public function skip($limit) {
-		$this->addOperator(new SkipOperator($limit));
-		return $this;
-	}
+	public abstract function skip($limit): Stream;
+
+	/**
+	 * Returns a new Stream that contains only distinct elements.
+	 *
+	 * @return Stream Current stream.
+	 */
+	public abstract function distinct(): Stream;
+
+	/**
+	 * Returns an optional containing the max value of the stream if exists.
+	 *
+	 * @param callable|string $indexer Indexer function or field.
+	 * @param bool $allowDuplicate If duplicates are allowed, no error if given when 2 elements got same key.
+	 *
+	 * @return Stream Current stream.
+	 */
+	public abstract function index($indexer, $allowDuplicate = false): Stream;
+
+	/**
+	 * Sort stream.
+	 *
+	 * @param callable|Comparator|string $cmp Comparator object / callback or field/method.
+	 *
+	 * @return Stream Current stream.
+	 */
+	public abstract function sort($cmp = null): Stream;
+
+	/**
+	 * Skip the first result.
+	 *
+	 * @param StreamOperator $operator Operator to execute.
+	 *
+	 * @return Stream Current stream.
+	 */
+	public abstract function execute(StreamOperator $operator): Stream;
 
 	/**
 	 * Returns an Optional instance containing any element of the resulting array if exists.
 	 *
 	 * @return Optional The first element of the resulting array if exists.
 	 */
-	public function findAny() {
-		$stream = clone $this;
-		return $stream->collect(new AnyCollector());
-	}
+	public abstract function findAny(): Optional;
 
 	/**
 	 * Returns an Optional instance containing the first element of the resulting array if exists.
 	 *
 	 * @return Optional The first element of the resulting array if exists.
 	 */
-	public function findFirst() {
-		$stream = clone $this;
-		$stream->addOperator(new LimitOperator(1));
-		return $stream->collect(new FirstCollector());
-	}
+	public abstract function findFirst(): Optional;
+
+	/**
+	 * Returns an Optional instance containing the first element of the resulting array if exists.
+	 *
+	 * @return Optional The first element of the resulting array if exists.
+	 */
+	public abstract function findLast(): Optional;
 
 	/**
 	 * Returnd the number of elements in the resulting array.
 	 *
 	 * @return int The number of elements in the resulting array.
 	 */
-	public function count() {
-		$stream = clone $this;
-		$stream->addOperator(new MapOperator(function () {
-			return 1;
-		}));
-		return $stream->collect(new SumCollector());
-	}
-
-	/**
-	 * Returns a new Stream that contains only distinct elements.
-	 *
-	 * @return Stream
-	 */
-	public function distinct() {
-		return new Stream($this->collect(new DistinctCollector()));
-	}
-
-	/**
-	 * Collect data according given Stream collector.
-	 *
-	 * @param StreamCollector $collector
-	 *
-	 * @return mixed Depends on Stream Collector
-	 */
-	public function collect(StreamCollector $collector) {
-		if (!empty($this->operators)) {
-			foreach ($this->operators as $operator) {
-				$operator->reset();
-			}
-			$collector->reset();
-
-			foreach ($this->array as $key => $value) {
-				$stopPropagation = false;
-
-				reset($this->operators);
-				$last = $value;
-				while (($operator = current($this->operators)) && !$stopPropagation) {
-					$last = $operator->execute($last, $stopPropagation);
-					next($this->operators);
-				}
-
-				if (!$stopPropagation)
-					$collector->collect($key, $last);
-			}
-		} else {
-			foreach ($this->array as $key => $value) {
-				$collector->collect($key, $value);
-			}
-		}
-
-		return $collector->get();
-	}
-
-	/**
-	 * Reduce the stream using the given function.
-	 * The reduce method will be called with
-	 * two Optional value.
-	 *
-	 * @param callable|functions\BiFunction $reducer
-	 *        	The reduce function to apply.
-	 * @param mixed $default
-	 *        	Default value
-	 *        	
-	 * @return Optional Value after the reduce operation if exists.
-	 */
-	public function reduceWithDefault($reducer, $default) {
-		$res = $this->reduce($reducer);
-		return $res->isEmpty() ? Optional::fromNullable($default) : $res;
-	}
-
-	/**
-	 * Reduce the stream using the given function.
-	 * The reduce method will be called with
-	 * two Optional value.
-	 *
-	 * @param callable|functions\BiFunction $reducer
-	 *        	The reduce function to apply.
-	 *        	
-	 * @return Optional Value after the reduce operation if exists.
-	 */
-	public function reduce($reducer) {
-		return $this->collect(new ReduceCollector($reducer));
-	}
-
-	/**
-	 * Returns a stream consisting of the elements of this stream, sorted according to the provided
-	 * comparator
-	 *
-	 * @param callable|Comparator $cmp
-	 *
-	 * @return \phpstream\Stream
-	 */
-	public function sort($cmp = null) {
-		$res = $this->collect(new MapCollector());
-
-		if ($cmp !== null) {
-			if ($cmp instanceof Comparator) {
-				$cmp = $this->getCallableComparator($cmp);
-			} else if (!is_callable($cmp)) {
-				throw new \InvalidArgumentException('Comparator function must be callable or a Comparator object.');
-			}
-			uasort($res, $cmp);
-		} else {
-			asort($res);
-		}
-		return new Stream($res);
-	}
-
-	/**
-	 * Returns an optional containing the min value of the stream if exists.
-	 *
-	 * @param callable|Comparator $cmp
-	 *        	Comparator objet / callback.
-	 *        	
-	 * @return Optional The min value of the stream.
-	 */
-	public function min($cmp = null) {
-		return $this->collect(new MinCollector($cmp));
-	}
-
-	/**
-	 * Returns an optional containing the max value of the stream if exists.
-	 *
-	 * @param callable|Comparator $cmp
-	 *        	Comparator objet / callback.
-	 *        	
-	 * @return Optional The max value of the stream.
-	 */
-	public function max($cmp = null) {
-		return $this->collect(new MaxCollector($cmp));
-	}
-
-	/**
-	 * Returns an optional containing the max value of the stream if exists.
-	 *
-	 * @param callable|string $indexer
-	 *        	Indexer function or field.
-	 * @param bool $allowDuplicate
-	 *        	If duplicates are allowed, no error if given when 2 elements got same key.
-	 *        	
-	 * @return Stream
-	 */
-	public function index($indexer, $allowDuplicate = false) {
-		$collected = $this->collect(new ListCollector());
-		$res = [];
-
-		$f = is_string($indexer) 
-			? function ($e) use ($indexer) {
-				return $e->$indexer;
-			} 
-			: $indexer;
-
-		foreach ($collected as $e) {
-			$key = $f($e);
-			if (!$allowDuplicate && array_key_exists($key, $res))
-				throw new \InvalidArgumentException("Multiple elements got same key.");
-			$res[$key] = $e;
-		}
-
-		return new Stream($res);
-	}
+	public abstract function count(): int;
 
 	/**
 	 * Executes all operations and return an array of results.
 	 *
 	 * @return array
 	 */
-	public function toArray() {
-		return $this->collect(new ListCollector());
-	}
+	public abstract function toArray(): array;
 
 	/**
 	 * Executes all operations and return a map of results (conserving key / value association of the initial array).
 	 *
 	 * @return array
 	 */
-	public function toMap() {
-		return $this->collect(new MapCollector());
-	}
+	public abstract function toMap(): array;
 
 	/**
-	 * Register an operator in the streaming process
+	 * Executes all operations and return a map of results (conserving key / value association of the initial array).
 	 *
-	 * @param StreamOperator $operator
-	 *        	Operator to register.
+	 * @return iterable
 	 */
-	protected function addOperator(StreamOperator $operator) {
-		$this->operators[] = $operator;
-	}
+	public abstract function toIterable(): iterable;
 
 	/**
-	 * Clone the current stream and returns a new one.
+	 * Returns an optional containing the min value of the stream if exists.
 	 *
-	 * @return Stream The cloned stream.
-	 *        
-	 * @ignore
+	 * @param callable|Comparator $cmp Comparator object / callback.
+	 *
+	 * @return Optional The min value of the stream.
 	 */
-	private function __clone() {
-		$stream = new Stream($this->array);
-		$stream->operators = array_merge([], $this->operators);
-		return $stream;
-	}
+	public abstract function min($cmp = null): Optional;
 
 	/**
-	 * Creates a callable function from the given comparator.
+	 * Returns an optional containing the max value of the stream if exists.
 	 *
-	 * @param Comparator $obj
+	 * @param callable|Comparator $cmp Comparator object / callback.
 	 *
-	 * @return callable callable function applying the comparator.
-	 *        
-	 * @ignore
+	 * @return Optional The max value of the stream.
 	 */
-	private function getCallableComparator(Comparator $obj) {
-		return function ($o1, $o2) use ($obj) {
-			return $obj->compare($o1, $o2);
-		};
+	public abstract function max($cmp = null): Optional;
+
+	/**
+	 * Collect data according given Stream collector.
+	 *
+	 * @param StreamCollector $collector Collector instance
+	 *
+	 * @return mixed Depends on Stream Collector
+	 */
+	public abstract function collect(StreamCollector $collector);
+
+	/**
+	 * @param $cmp
+	 *
+	 * @return callable|Comparator A comparator method or object
+	 */
+	protected final function _getComparator($cmp) {
+		$fn = $cmp;
+		if ($fn === null) {
+			$fn = function ($o1, $o2) {
+				return $o1 <=> $o2;
+			};
+		}
+		if (is_string($fn)) {
+			/* @var callable $callable */
+			$callable = MapOperator::getFn($fn)[1];
+			if ($callable) {
+				$fn = function ($o1, $o2) use ($callable) {
+					return $callable($o1) <=> $callable($o2);
+				};
+			}
+		}
+		if (!($fn instanceof Comparator) && !is_callable($fn)) {
+			throw new InvalidArgumentException("Comparator callback must be instance of Comparator or a callable function.");
+		}
+		return $fn;
 	}
 }

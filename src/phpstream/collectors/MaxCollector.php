@@ -1,98 +1,85 @@
 <?php
-
 /**
- * Max collector.
- * 
  * @copyright Copyright (c) 2015 Hervé Guenot
  * @license https://github.com/hguenot/phpstream/blob/master/LICENSE The MIT License (MIT)
- * @link https://github.com/hguenot/phpstream#readme Readme
+ * @readme https://github.com/hguenot/phpstream#php-stream
  */
 namespace phpstream\collectors;
 
+use InvalidArgumentException;
 use phpstream\util\Comparator;
 use phpstream\util\Optional;
 
 /**
- * Collects the max collected element.
+ * Collects the max collected element using comparing function.
  */
-class MaxCollector extends AbstractCollector {
-
-	/** @var Optional Current collected element (max of all at any time) */
-	private $current;
+class MaxCollector implements StreamCollector {
 
 	/**
-	 *
-	 * @var callable Comparator function.
-	 * @ignore
+	 * Comparator function used to find the max value during the collecting process.
+	 * It should take 2 arguments and must return an integer less than, equal to, or greater than zero if the first argument
+	 * is considered to be respectively less than, equal to, or greater than the second
+	 * @var callable $_callable
+	 * @internal
 	 */
-	private $callable;
+	private $_callable;
 
 	/**
-	 *
-	 * @var Comparator Comparator object.
-	 * @ignore
+	 * Comparator object used to find the max value during the collecting process.
+	 * @var Comparator $_comparator.
+	 * @internal
 	 */
-	private $comparator;
+	private $_comparator;
 
 	/**
-	 * Instanciate a new MaxCollector using specific comparator function.
-	 * If comparator function is not set, use default comparator.
+	 * Create a new MaxCollector using specific comparator function.
 	 *
-	 * @param callable|Comparator $cmp
-	 *        	Comparator method / object.
-	 *        	
-	 * @throws \InvalidArgumentException If parameter is not callable or instance of Comparator.
+	 * If comparator function is not set, use native comparison.
+	 * If parameter is a callable function, it should take 2 arguments and must return an integer less than, equal to,
+	 * or greater than zero if the first argument is considered to be respectively less than, equal to, or greater than the second
+	 *
+	 * @param callable|Comparator $cmp Comparator method / object.
+	 *
+	 * @throws InvalidArgumentException If parameter is not callable or instance of Comparator.
 	 */
 	public function __construct($cmp = null) {
-		parent::__construct();
 		if ($cmp === null) {
-			$this->callable = function ($o1, $o2) {
-				if ($o1 == $o2)
-					return 0;
-				return $o1 < $o2 ? -1 : 1;
+			$this->_callable = function ($o1, $o2) {
+				return $o1 <=> $o2;
 			};
 		} else if ($cmp instanceof Comparator) {
-			$this->comparator = $cmp;
+			$this->_comparator = $cmp;
 		} else if (is_callable($cmp)) {
-			$this->callable = $cmp;
+			$this->_callable = $cmp;
 		} else {
-			throw new \InvalidArgumentException('Parameter must be callable or Comparator.');
+			throw new InvalidArgumentException('Parameter must be callable or Comparator.');
 		}
 	}
 
 	/**
-	 * Collects the max element at any time regarding the comparator method.
+	 * The method collects the max value of an `iterable` processed by the Stream API.
 	 *
-	 * @param mixed $key
-	 *        	Key value in the initial array (<em>array index</em>)
-	 * @param mixed $value
-	 *        	Value after processing
+	 * @param iterable $values Values to collect.
+	 *
+	 * @return Optional The max collected value if exists.
 	 */
-	public function collect($key, $value) {
-		if ($this->current->isEmpty()) {
-			$this->current = Optional::of($value);
-		} else if ($this->comparator !== null) {
-			if ($this->comparator->compare($value, $this->current->get()) > 0)
-				$this->current = Optional::of($value);
+	public function collect(iterable $values): Optional {
+		/* @var Optional $current */
+		$current = null;
+		if ($this->_comparator !== null) {
+			foreach ($values as $value) {
+				if ($current === null || $this->_comparator->compare($value, $current->orNull()) > 0) {
+					$current = Optional::ofNullable($value);
+				}
+			}
 		} else {
-			if (call_user_func($this->callable, $value, $this->current->get()) > 0)
-				$this->current = Optional::of($value);
+			foreach ($values as $value) {
+				if ($current === null || call_user_func($this->_callable, $value, $current->orNull()) > 0) {
+					$current = Optional::ofNullable($value);
+				}
+			}
 		}
-	}
 
-	/**
-	 * Removing the collected element.
-	 */
-	public function reset() {
-		$this->current = Optional::absent();
-	}
-
-	/**
-	 * Returns the max collected element regarding the comparator method, Optional::absent() if none.
-	 *
-	 * @return Optional the max collected element regarding the comparator method, Optional::absent() if none.
-	 */
-	public function get() {
-		return $this->current;
+		return $current == null ? Optional::absent() : $current;
 	}
 }
