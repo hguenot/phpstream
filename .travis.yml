@@ -1,14 +1,32 @@
 language: php
-php:
-  - 7.2
-  - nightly
+
+matrix:
+  include:
+    - php: 7.1
+      env:
+        - WITH_CODECOV=true
+        - PHPUNIT_BIN=./vendor/bin/phpunit
+    - php: 7.2
+      env:
+        - PHPUNIT_BIN=./vendor/bin/phpunit
+    - php: 7.3
+      env:
+        - CLEAR_PHP_UNIT=true
+        - PHPUNIT_BIN=phpunit
+    - php: nightly
+      env:
+        - CLEAR_PHP_UNIT=true
+        - WITH_BENCHMARK=true
+        - PHPUNIT_BIN=phpunit
 
 script:
-  - composer install
-  - phpunit --coverage-clover=coverage.xml
+  - test -z "${CLEAR_PHP_UNIT}" || composer remove --dev "phpunit/phpunit"
+  - COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --prefer-dist --no-interaction
+  - test -z "${WITH_BENCHMARK}" || bash ./benchmark/benchmark.sh
+  - ${PHPUNIT_BIN} --coverage-clover coverage.xml
 
 before_install:
   - pip install --user codecov
-  
+
 after_success:
-  - codecov
+  - test -z "${WITH_CODECOV}" || codecov
