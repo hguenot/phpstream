@@ -28,7 +28,7 @@
   },
   "scripts": {
     "tests": "phpunit --coverage-clover=coverage.xml --coverage-html=./docs/coverage --log-junit=test-report.xml",
-    "phpdoc": "doxygen docs/api.doxyfile",
+    "phpdoc": "doxygen",
     "codecov": "codecov -t \"53966c45-505c-44bc-8080-22598e8030f3\" -f \"coverage.xml\""
   }
 }
