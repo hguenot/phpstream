@@ -14,6 +14,7 @@ use phpstream\collectors\LastCollector;
 use phpstream\collectors\MaxCollector;
 use phpstream\collectors\MinCollector;
 use phpstream\collectors\StreamCollector;
+use phpstream\functions\BinaryFunction;
 use phpstream\operators\DistinctOperator;
 use phpstream\operators\FilterOperator;
 use phpstream\operators\LimitOperator;
@@ -172,6 +173,21 @@ class GeneratorStream extends Stream {
 	public function max($cmp = null): Optional {
 		$collector = new MaxCollector($cmp);
 		return $collector->collect($this->_iterable);
+	}
+
+	public function reduce($reducer, $initialValue = null) {
+		$iterable = $this->_iterable;
+		$fn = $reducer instanceof BinaryFunction
+				? function ($carry, $item) use ($reducer) {
+					return $reducer->apply($carry, $item);
+				}
+				: $reducer;
+		$result = $initialValue;
+		foreach ($iterable as $value) {
+			$result = $fn($result, $value);
+		}
+
+		return $result;
 	}
 
 	public function collect(StreamCollector $collector) {

@@ -8,6 +8,7 @@ namespace phpstream\impl;
 
 use InvalidArgumentException;
 use phpstream\collectors\StreamCollector;
+use phpstream\functions\BinaryFunction;
 use phpstream\functions\UnaryFunction;
 use phpstream\operators\FilterOperator;
 use phpstream\operators\MapOperator;
@@ -221,6 +222,15 @@ class MemoryStream extends Stream {
 					return $cmp($o2, $o1);
 				});
 		return $this->findFirst();
+	}
+
+	public function reduce($reducer, $initialValue = null) {
+		return array_reduce($this->_array, $reducer instanceof BinaryFunction
+				? function ($carry, $item) use ($reducer) {
+					return $reducer->apply($carry, $item);
+				}
+				: $reducer,
+				$initialValue);
 	}
 
 	public function collect(StreamCollector $collector) {
