@@ -7,10 +7,11 @@ This library could be used to filter, convert or reduce any array.
 
 Continuous integration
 ------------
-[![Build Status](https://travis-ci.org/hguenot/phpstream.svg?branch=php-7)](https://travis-ci.org/hguenot/phpstream) 
-[![Code coverage](https://codecov.io/gh/hguenot/phpstream/branch/php-7/graph/badge.svg)](https://app.codecov.io/gh/hguenot/phpstream/branch/php-7) 
-[![GitHub version](https://img.shields.io/github/release/hguenot/phpstream.svg)](https://github.com/hguenot/phpstream/releases) 
-[![Packagist version](https://img.shields.io/packagist/v/hguenot/phpstream.svg)](https://packagist.org/packages/hguenot/phpstream)
+[![Build Status](https://img.shields.io/travis/hguenot/phpstream/php-7)](https://travis-ci.org/github/hguenot/phpstream/branches) 
+[![Code coverage](https://img.shields.io/codecov/c/github/hguenot/phpstream/php-7)](https://codecov.io/github/hguenot/phpstream/branch/php-7)
+[![GitHub last version](https://img.shields.io/github/v/release/hguenot/phpstream)](https://github.com/hguenot/phpstream/releases)
+[![Packagist last version](https://img.shields.io/packagist/v/hguenot/phpstream)](https://packagist.org/packages/hguenot/phpstream)
+[![Packagist all downloads](https://img.shields.io/packagist/dt/hguenot/phpstream)][https://packagist.org/packages/hguenot/phpstream]
 
 Installation
 ------------
