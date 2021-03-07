@@ -8,6 +8,7 @@ namespace phpstream;
 
 use InvalidArgumentException;
 use phpstream\collectors\StreamCollector;
+use phpstream\functions\BinaryFunction;
 use phpstream\functions\UnaryFunction;
 use phpstream\impl\GeneratorStream;
 use phpstream\impl\MemoryStream;
@@ -225,6 +226,16 @@ abstract class Stream {
 	 * @return Optional The max value of the stream.
 	 */
 	public abstract function max($cmp = null): Optional;
+
+	/**
+	 * Reduces the value of the array using the given function.
+	 *
+	 * @param callable|BinaryFunction $reducer Reducing callback.
+	 * @param mixed $initialValue Initial value - default if stream is empty.
+	 *
+	 * @return mixed The reduced value of the stream.
+	 */
+	public abstract function reduce($reducer, $initialValue = null);
 
 	/**
 	 * Collect data according given Stream collector.

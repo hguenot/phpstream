@@ -10,3 +10,5 @@ composer.lock
 test-report.xml
 yarn.lock
 *.iml
+.idea
+.phpunit.result.cache
