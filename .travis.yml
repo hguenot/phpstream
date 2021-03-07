@@ -7,6 +7,7 @@ matrix:
         - CLEAR_PHP_UNIT=true
         - WITH_BENCHMARK=true
         - PHPUNIT_BIN=phpunit
+        - WITH_CODECOV=true
     - php: nightly
       env:
         - CLEAR_PHP_UNIT=true
