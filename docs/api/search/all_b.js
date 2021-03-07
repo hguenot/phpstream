@@ -1,13 +1,9 @@
 var searchData=
 [
-  ['collectors_46',['collectors',['../namespacephpstream_1_1collectors.html',1,'phpstream']]],
-  ['functions_47',['functions',['../namespacephpstream_1_1functions.html',1,'phpstream']]],
-  ['impl_48',['impl',['../namespacephpstream_1_1impl.html',1,'phpstream']]],
-  ['php_20stream_49',['PHP Stream',['../index.html',1,'']]],
-  ['operators_50',['operators',['../namespacephpstream_1_1operators.html',1,'phpstream']]],
-  ['peek_51',['peek',['../classphpstream_1_1impl_1_1GeneratorStream.html#aedbb8c9abd7772f851a87033a6d6c7b7',1,'phpstream\impl\GeneratorStream\peek()'],['../classphpstream_1_1impl_1_1MemoryStream.html#a042c95d6bde0e85b2d5b530654fcc562',1,'phpstream\impl\MemoryStream\peek()'],['../classphpstream_1_1Stream.html#a884fb542011f59b8f0bcb3f995259593',1,'phpstream\Stream\peek()']]],
-  ['peekoperator_52',['PeekOperator',['../classphpstream_1_1operators_1_1PeekOperator.html',1,'phpstream::operators']]],
-  ['phpstream_53',['phpstream',['../namespacephpstream.html',1,'']]],
-  ['present_54',['Present',['../classphpstream_1_1util_1_1Present.html',1,'phpstream::util']]],
-  ['util_55',['util',['../namespacephpstream_1_1util.html',1,'phpstream']]]
+  ['of_41',['of',['../classphpstream_1_1Stream.html#a87d9eca03ad86282c391babbadfbb673',1,'phpstream\Stream\of()'],['../classphpstream_1_1util_1_1Optional.html#a9623259c0b616dfcb8345bfd826ce565',1,'phpstream\util\Optional\of(mixed $reference)']]],
+  ['ofnullable_42',['ofNullable',['../classphpstream_1_1util_1_1Optional.html#a0aa1045a69fd3d351b5f671a6b8a8f3a',1,'phpstream::util::Optional']]],
+  ['optional_43',['Optional',['../classphpstream_1_1util_1_1Optional.html',1,'phpstream::util']]],
+  ['orelse_44',['orElse',['../classphpstream_1_1util_1_1__optional_1_1Absent.html#ae99c5e7416d247acb6e3271f3b97de9b',1,'phpstream\util\_optional\Absent\orElse()'],['../classphpstream_1_1util_1_1__optional_1_1Present.html#a0126ec941b3a24812a41fe65cdb47a32',1,'phpstream\util\_optional\Present\orElse()'],['../classphpstream_1_1util_1_1Optional.html#af5fbea45e0cfe2a114d5e7a246803986',1,'phpstream\util\Optional\orElse()']]],
+  ['orelsethrow_45',['orElseThrow',['../classphpstream_1_1util_1_1__optional_1_1Absent.html#a9c9a2ba91b0355cb6b137a949c9ac6c0',1,'phpstream\util\_optional\Absent\orElseThrow()'],['../classphpstream_1_1util_1_1__optional_1_1Present.html#ae4cb3f59cb6aec6e1600c49183033709',1,'phpstream\util\_optional\Present\orElseThrow()'],['../classphpstream_1_1util_1_1Optional.html#aa0b2327e34818db44e4c7b6ef4453048',1,'phpstream\util\Optional\orElseThrow()']]],
+  ['ornull_46',['orNull',['../classphpstream_1_1util_1_1__optional_1_1Absent.html#a323b133c532bb4f8e151b06b9cdfec17',1,'phpstream\util\_optional\Absent\orNull()'],['../classphpstream_1_1util_1_1__optional_1_1Present.html#a92298ee84db02ee3daf97551a6972591',1,'phpstream\util\_optional\Present\orNull()'],['../classphpstream_1_1util_1_1Optional.html#aae9328eb585d68e7b73df7bc0cea2e8b',1,'phpstream\util\Optional\orNull()']]]
 ];

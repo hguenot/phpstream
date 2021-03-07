@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['distinctoperator_70',['DistinctOperator',['../classphpstream_1_1operators_1_1DistinctOperator.html',1,'phpstream::operators']]]
+  ['comparator_69',['Comparator',['../interfacephpstream_1_1util_1_1Comparator.html',1,'phpstream::util']]],
+  ['countcollector_70',['CountCollector',['../classphpstream_1_1collectors_1_1CountCollector.html',1,'phpstream::collectors']]]
 ];

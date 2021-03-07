@@ -1,9 +1,11 @@
 var searchData=
 [
-  ['skip_56',['skip',['../classphpstream_1_1impl_1_1GeneratorStream.html#a6e77f4ef12ff4059d5c7e91f9518e187',1,'phpstream\impl\GeneratorStream\skip()'],['../classphpstream_1_1impl_1_1MemoryStream.html#adf5b7fa1b6d3ffdc205f5e9f24dbcd68',1,'phpstream\impl\MemoryStream\skip()'],['../classphpstream_1_1Stream.html#af58dada66077ca05c6c0750c40534c6a',1,'phpstream\Stream\skip()']]],
-  ['skipoperator_57',['SkipOperator',['../classphpstream_1_1operators_1_1SkipOperator.html',1,'phpstream::operators']]],
-  ['sort_58',['sort',['../classphpstream_1_1impl_1_1GeneratorStream.html#add0c80a54a62587a24a4935c076923f4',1,'phpstream\impl\GeneratorStream\sort()'],['../classphpstream_1_1impl_1_1MemoryStream.html#a298b924ed49ec604154dad26e075233b',1,'phpstream\impl\MemoryStream\sort()'],['../classphpstream_1_1Stream.html#a5533c87e64b4a454c07737fd9fc28c99',1,'phpstream\Stream\sort()']]],
-  ['stream_59',['Stream',['../classphpstream_1_1Stream.html',1,'phpstream']]],
-  ['streamcollector_60',['StreamCollector',['../interfacephpstream_1_1collectors_1_1StreamCollector.html',1,'phpstream::collectors']]],
-  ['streamoperator_61',['StreamOperator',['../interfacephpstream_1_1operators_1_1StreamOperator.html',1,'phpstream::operators']]]
+  ['collectors_47',['collectors',['../namespacephpstream_1_1collectors.html',1,'phpstream']]],
+  ['functions_48',['functions',['../namespacephpstream_1_1functions.html',1,'phpstream']]],
+  ['impl_49',['impl',['../namespacephpstream_1_1impl.html',1,'phpstream']]],
+  ['operators_50',['operators',['../namespacephpstream_1_1operators.html',1,'phpstream']]],
+  ['peek_51',['peek',['../classphpstream_1_1impl_1_1GeneratorStream.html#a93fba2e13fed5623207d4b7e6e4281ee',1,'phpstream\impl\GeneratorStream\peek()'],['../classphpstream_1_1impl_1_1MemoryStream.html#a2fee444a1c464a23442c72cb9be8a8cb',1,'phpstream\impl\MemoryStream\peek()'],['../classphpstream_1_1Stream.html#ab744d5dde67991764448ce193ac41ca7',1,'phpstream\Stream\peek()']]],
+  ['peekoperator_52',['PeekOperator',['../classphpstream_1_1operators_1_1PeekOperator.html',1,'phpstream::operators']]],
+  ['php_20stream_53',['PHP Stream',['../index.html',1,'']]],
+  ['present_54',['Present',['../classphpstream_1_1util_1_1__optional_1_1Present.html',1,'phpstream::util::_optional']]]
 ];
