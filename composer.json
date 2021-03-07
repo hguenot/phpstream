@@ -24,7 +24,7 @@
     }
   },
   "require-dev": {
-    "phpunit/phpunit": ">7"
+    "phpunit/phpunit": ">9"
   },
   "scripts": {
     "tests": "phpunit --coverage-clover=coverage.xml --coverage-html=./docs/coverage --log-junit=test-report.xml",
