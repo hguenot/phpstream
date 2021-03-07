@@ -4,7 +4,6 @@ matrix:
   include:
     - php: 7.1
       env:
-        - WITH_CODECOV=true
         - WITH_BENCHMARK=true
         - PHPUNIT_BIN=./vendor/bin/phpunit
     - php: 7.2
