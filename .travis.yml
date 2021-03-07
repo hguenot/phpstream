@@ -16,6 +16,12 @@ matrix:
         - CLEAR_PHP_UNIT=true
         - WITH_BENCHMARK=true
         - PHPUNIT_BIN=phpunit
+    - php: 7.4
+      env:
+        - CLEAR_PHP_UNIT=true
+        - WITH_BENCHMARK=true
+        - WITH_CODECOV=true
+        - PHPUNIT_BIN=phpunit
     - php: nightly
       env:
         - CLEAR_PHP_UNIT=true
