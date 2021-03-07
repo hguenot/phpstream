@@ -11,7 +11,7 @@ Continuous integration
 [![Code coverage](https://img.shields.io/codecov/c/github/hguenot/phpstream/php-7)](https://codecov.io/github/hguenot/phpstream/branch/php-7)
 [![GitHub last version](https://img.shields.io/github/v/release/hguenot/phpstream)](https://github.com/hguenot/phpstream/releases)
 [![Packagist last version](https://img.shields.io/packagist/v/hguenot/phpstream)](https://packagist.org/packages/hguenot/phpstream)
-[![Packagist all downloads](https://img.shields.io/packagist/dt/hguenot/phpstream)][https://packagist.org/packages/hguenot/phpstream]
+[![Packagist all downloads](https://img.shields.io/packagist/dt/hguenot/phpstream)](https://packagist.org/packages/hguenot/phpstream)
 
 Installation
 ------------
