@@ -2,6 +2,7 @@
 
 use phpstream\collectors\MapCollector;
 use phpstream\Stream;
+use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\TestCase;
 
 include_once(__DIR__ . '/bean/Bean.php');
@@ -58,6 +59,8 @@ class IndexMemoryStreamTest extends TestCase {
 			       ->map('getY')
 			       ->toMap();
 			$this->fail('An expected exception has not been raised.');
+		} catch (AssertionFailedError $ex) {
+			throw $ex;
 		} catch (Exception $ex) {
 			$this->assertInstanceOf(InvalidArgumentException::class, $ex,
 					'Should be an InvalidArgumentException exception');

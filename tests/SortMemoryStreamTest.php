@@ -43,28 +43,4 @@ class SortMemoryStreamTest extends TestCase {
 
 		$this->assertEquals([4, 2, -2, -9], $res);
 	}
-
-	public function testException() {
-		try {
-			$array = [2, 4, -2, -9];
-			$stream = Stream::of($array, $this->isMemory());
-			$stream->sort('reverseComparator')
-				->count();
-			$this->fail('An expected exception has not been raised.');
-		} catch (Exception $ex) {
-			$this->assertInstanceOf(InvalidArgumentException::class, $ex, 'Should be an InvalidArgumentException exception');
-		}
-	}
-
-	public function testException2() {
-		try {
-			$array = [2, 4, -2, -9];
-			$stream = Stream::of($array, $this->isMemory());
-			$stream->sort(new ArrayCollector())
-				->count();
-			$this->fail('An expected exception has not been raised.');
-		} catch (Exception $ex) {
-			$this->assertInstanceOf(InvalidArgumentException::class, $ex, 'Should be an InvalidArgumentException exception');
-		}
-	}
 }

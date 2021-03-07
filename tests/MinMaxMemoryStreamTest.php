@@ -91,26 +91,4 @@ class MinMaxMemoryStreamTest extends TestCase {
 
 		$this->assertTrue($res->isEmpty());
 	}
-
-	public function testMinException() {
-		try {
-			$array = [];
-			$stream = Stream::of($array, $this->isMemory());
-			$stream->min('reverseComparator');
-			$this->fail('An expected exception has not been raised.');
-		} catch (Exception $ex) {
-			$this->assertInstanceOf(InvalidArgumentException::class, $ex, 'Should be an InvalidArgumentException exception');
-		}
-	}
-
-	public function testMaxException() {
-		try {
-			$array = [];
-			$stream = Stream::of($array, $this->isMemory());
-			$stream->max('reverseComparator');
-			$this->fail('An expected exception has not been raised.');
-		} catch (Exception $ex) {
-			$this->assertInstanceOf(InvalidArgumentException::class, $ex, 'Should be an InvalidArgumentException exception');
-		}
-	}
 }

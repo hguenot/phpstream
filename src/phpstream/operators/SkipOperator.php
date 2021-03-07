@@ -14,22 +14,14 @@ use InvalidArgumentException;
 class SkipOperator implements StreamOperator {
 
 	/**
-	 * Number of results to skip.
-	 *
-	 * @var int $_limit
-	 */
-	private $_limit;
-
-	/**
 	 * Construct a new LimitOperator.
 	 *
 	 * @param int $limit Number of results to skip.
 	 */
-	public function __construct(int $limit) {
+	public function __construct(private int $limit) {
 		if ($limit < 0) {
 			throw new InvalidArgumentException('Limit must be a positive integer.');
 		}
-		$this->_limit = $limit;
 	}
 
 	/**
@@ -43,7 +35,7 @@ class SkipOperator implements StreamOperator {
 		$current = 0;
 
 		foreach ($values as $key => $value) {
-			if ($current >= $this->_limit) {
+			if ($current >= $this->limit) {
 				yield $key => $value;
 			}
 			$current++;

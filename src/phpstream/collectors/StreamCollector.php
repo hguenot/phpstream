@@ -14,10 +14,10 @@ interface StreamCollector {
 	/**
 	 * The method collect the value of an `iterable` processed by the Stream API.
 	 *
-	 * @param iterable $values Values to collect.
+	 * @param iterable $iterable Values to collect.
 	 *
 	 * @return mixed The collected value(s)
 	 */
-	public function collect(iterable $values);
+	public function collect(iterable $iterable): mixed;
 
 }

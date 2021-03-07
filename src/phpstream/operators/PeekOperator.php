@@ -8,12 +8,15 @@ namespace phpstream\operators;
 
 use InvalidArgumentException;
 use phpstream\functions\UnaryFunction;
+use phpstream\traits\OperatorInvokableTrait;
 
 /**
  * A peek operator is used to call a function over ech element of the collection without altering it (i.e.
  * display the actual value of the list.)
  */
 class PeekOperator implements StreamOperator {
+
+	use OperatorInvokableTrait;
 
 	/**
 	 * Function applied to each value during the streaming process.
@@ -26,10 +29,10 @@ class PeekOperator implements StreamOperator {
 	/**
 	 * Function object applied to each value during the streaming process.
 	 * The implemented UnaryFunction::apply should return nothing
-	 * @var UnaryFunction $_function.
+	 * @var UnaryFunction|null $_function.
 	 * @internal
 	 */
-	private $_function;
+	private ?UnaryFunction $_function;
 
 	/**
 	 * Creates a new peek operator enclosing the given function.
@@ -40,12 +43,11 @@ class PeekOperator implements StreamOperator {
 	 *
 	 * The potential returned value of the "peeking" function will be ignored.
 	 *
-	 * @param callable|UnaryFunction $fn The "do nothing" function.
-	 *        	
-	 * @throws InvalidArgumentException If function has a bad type.
+	 * @param callable|UnaryFunction|PeekOperator $fn The "do nothing" function.
 	 */
-	public function __construct($fn) {
+	public function __construct(callable|UnaryFunction|PeekOperator $fn) {
 		[$this->_function, $this->_callable] = self::getFn($fn);
+		$this->buildInvoker($this->_function, $this->_callable);
 	}
 
 	/**
@@ -77,15 +79,13 @@ class PeekOperator implements StreamOperator {
 	 * @ignore
 	 * @internal
 	 */
-	public static function getFn($fn) {
+	private static function getFn(callable|UnaryFunction|PeekOperator $fn): array {
 		if ($fn instanceof PeekOperator) {
 			return [$fn->_function, $fn->_callable];
 		} else if ($fn instanceof UnaryFunction) {
 			return [$fn, null];
-		} else if (is_callable($fn)) {
-			return [null, $fn];
 		} else {
-			throw new InvalidArgumentException('Parameter must be callable or UnaryFunction.');
+			return [null, $fn];
 		}
 	}
 }

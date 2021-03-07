@@ -14,23 +14,16 @@ use InvalidArgumentException;
 class LimitOperator implements StreamOperator {
 
 	/**
-	 * Maximum number of results to collect.
-	 * @var int $_limit
-	 */
-	private $_limit;
-
-	/**
 	 * Construct a new LimitOperator.
 	 *
 	 * @param int $limit Maximum number of results to collect.
 	 *
 	 * @throws InvalidArgumentException If `$limit` is a negative number
 	 */
-	public function __construct(int $limit) {
+	public function __construct(private int $limit) {
 		if ($limit < 0) {
 			throw new InvalidArgumentException('Limit must be a positive integer.');
 		}
-		$this->_limit = $limit;
 	}
 
 	/**
@@ -44,7 +37,7 @@ class LimitOperator implements StreamOperator {
 		$current = 0;
 
 		foreach ($values as $key => $value) {
-			if ($current < $this->_limit) {
+			if ($current < $this->limit) {
 				$current++;
 				yield $key => $value;
 			}

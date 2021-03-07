@@ -2,9 +2,7 @@
 
 class Bean {
 
-	public $x;
-
-	public function __construct(int $x = 0) {
+	public function __construct(public int $x = 0) {
 		$this->x = $x;
 	}
 

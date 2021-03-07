@@ -26,7 +26,7 @@ class MapCollector implements StreamCollector {
 	/**
 	 * MapCollector constructor.
 	 *
-	 * @param callable $keyMapper Key mapper. If sets to null, use the original key.
+	 * @param callable|null $keyMapper Key mapper. If sets to null, use the original key.
 	 * @param callable|null $valueMapper Value mapper. If sets to null, use the original value.
 	 */
 	public function __construct(callable $keyMapper = null, callable $valueMapper = null) {
@@ -39,7 +39,7 @@ class MapCollector implements StreamCollector {
 		};
 	}
 
-	public function collect(iterable $values) {
+	public function collect(iterable $values): array {
 		$keyMapper = $this->keyMapper;
 		$valueMapper = $this->valueMapper;
 		$res = [];

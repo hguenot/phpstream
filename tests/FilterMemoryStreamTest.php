@@ -41,7 +41,7 @@ class FilterMemoryStreamTest extends TestCase {
 		$stream = Stream::of($array, $this->isMemory());
 		$stream->filter(new FilterOperator(new class() implements UnaryFunction {
 
-			public function apply($value) {
+			public function apply(mixed $value): bool {
 				return intval($value) % 2 == 0;
 			}
 		}));
@@ -89,14 +89,5 @@ class FilterMemoryStreamTest extends TestCase {
 		}));
 
 		$this->assertEquals([4 => 2, 8 => 4, 12 => 6], $res);
-	}
-
-	public function testNotCallable() {
-		try {
-			Stream::of([], $this->isMemory())->filter(true);
-			$this->fail('An expected exception has not been raised.');
-		} catch (\Exception $ex) {
-			$this->assertInstanceOf(InvalidArgumentException::class, $ex, 'Should be an InvalidArgumentException exception');
-		}
 	}
 }

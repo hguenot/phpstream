@@ -14,6 +14,7 @@ use phpstream\collectors\LastCollector;
 use phpstream\collectors\MaxCollector;
 use phpstream\collectors\MinCollector;
 use phpstream\collectors\StreamCollector;
+use phpstream\functions\UnaryFunction;
 use phpstream\functions\BinaryFunction;
 use phpstream\operators\DistinctOperator;
 use phpstream\operators\FilterOperator;
@@ -32,63 +33,56 @@ use phpstream\util\Optional;
  */
 class GeneratorStream extends Stream {
 	/**
-	 * Enclosed iterator to be processed.
-	 * @var iterable $_iterable
-	 */
-	private $_iterable;
-
-	/**
 	 * GeneratorStream constructor.
 	 *
 	 * @param iterable $iterable Iterable value to be processed.
 	 */
-	public function __construct(iterable $iterable) {
-		$this->_iterable = $iterable;
+	public function __construct(private iterable $iterable) {
 	}
 
-	public function filter($filter): Stream {
+	public function filter(callable|UnaryFunction|FilterOperator $filter): Stream {
 		$operator = new FilterOperator($filter);
-		$this->_iterable = $operator->execute($this->_iterable);
+		$this->iterable = $operator->execute($this->iterable);
 		return $this;
 	}
 
-	public function map($mapper): Stream {
+	public function map(callable|UnaryFunction|string|MapOperator $mapper): Stream {
 		$operator = new MapOperator($mapper);
-		$this->_iterable = $operator->execute($this->_iterable);
+		$this->iterable = $operator->execute($this->iterable);
 		return $this;
 	}
 
-	public function peek($peekingFunction): Stream {
+	public function peek(callable|UnaryFunction|PeekOperator $peekingFunction): Stream {
 		$operator = new PeekOperator($peekingFunction);
-		$this->_iterable = $operator->execute($this->_iterable);
+		$this->iterable = $operator->execute($this->iterable);
 		return $this;
 	}
 
 	public function limit(int $limit): Stream {
 		$operator = new LimitOperator($limit);
-		$this->_iterable = $operator->execute($this->_iterable);
+		$this->iterable = $operator->execute($this->iterable);
 		return $this;
 	}
 
-	public function skip($limit): Stream {
+	public function skip(int $limit): Stream {
 		$operator = new SkipOperator($limit);
-		$this->_iterable = $operator->execute($this->_iterable);
+		$this->iterable = $operator->execute($this->iterable);
 		return $this;
 	}
 
 	public function distinct(): Stream {
 		$operator = new DistinctOperator();
-		$this->_iterable = $operator->execute($this->_iterable);
+		$this->iterable = $operator->execute($this->iterable);
 		return $this;
 	}
 
-	public function index($indexer, $allowDuplicate = false): Stream {
+	public function index(callable|string $indexer, $allowDuplicate = false): Stream {
 		$f = is_string($indexer)
 				? function ($e) use ($indexer) {
 					return $e->$indexer;
 				}
 				: $indexer;
-		$iterable = $this->_iterable;
+		$iterable = $this->iterable;
 		if ($allowDuplicate) {
 			$mapper = function () use ($iterable, $f): iterable {
 				foreach ($iterable as $value) {
@@ -109,25 +103,25 @@ class GeneratorStream extends Stream {
 			};
 		}
 
-		$this->_iterable = $mapper();
+		$this->iterable = $mapper();
 
 		return $this;
 	}
 
-	public function sort($cmp = null): Stream {
+	public function sort(callable|Comparator|string $cmp = null): Stream {
 		$fn = $this->_getComparator($cmp);
-		$array = iterable_to_array($this->_iterable, true);
+		$array = iterable_to_array($this->iterable, true);
 		uasort($array, $fn instanceof Comparator
 				? function ($o1, $o2) use ($fn) {
 					return $fn->compare($o1, $o2);
 				}
 				: $fn);
-		$this->_iterable = $array;
+		$this->iterable = $array;
 		return $this;
 	}
 
 	public function execute(StreamOperator $operator): Stream {
-		$this->_iterable = $operator->execute($this->_iterable);
+		$this->iterable = $operator->execute($this->iterable);
 		return $this;
 	}
 
@@ -138,45 +132,45 @@ class GeneratorStream extends Stream {
 	public function findFirst(): Optional {
 		$collector = new FirstCollector();
 		$this->limit(1);
-		return $collector->collect($this->_iterable);
+		return $collector->collect($this->iterable);
 	}
 
 	public function findLast(): Optional {
 		$collector = new LastCollector();
-		return $collector->collect($this->_iterable);
+		return $collector->collect($this->iterable);
 	}
 
 	public function count(): int {
 		$collector = new CountCollector();
-		return $collector->collect($this->_iterable);
+		return $collector->collect($this->iterable);
 	}
 
 	public function toArray(): array {
 		$collector = new ArrayCollector(false);
-		return $collector->collect($this->_iterable);
+		return $collector->collect($this->iterable);
 	}
 
 	public function toMap(): array {
 		$collector = new ArrayCollector(true);
-		return $collector->collect($this->_iterable);
+		return $collector->collect($this->iterable);
 	}
 
 	public function toIterable(): iterable {
-		return $this->_iterable;
+		return $this->iterable;
 	}
 
-	public function min($cmp = null): Optional {
+	public function min(callable|Comparator $cmp = null): Optional {
 		$collector = new MinCollector($cmp);
-		return $collector->collect($this->_iterable);
+		return $collector->collect($this->iterable);
 	}
 
-	public function max($cmp = null): Optional {
+	public function max(callable|Comparator $cmp = null): Optional {
 		$collector = new MaxCollector($cmp);
-		return $collector->collect($this->_iterable);
+		return $collector->collect($this->iterable);
 	}
 
-	public function reduce($reducer, $initialValue = null) {
-		$iterable = $this->_iterable;
+	public function reduce(callable|BinaryFunction $reducer, $initialValue = null): mixed {
+		$iterable = $this->iterable;
 		$fn = $reducer instanceof BinaryFunction
 				? function ($carry, $item) use ($reducer) {
 					return $reducer->apply($carry, $item);
@@ -190,7 +184,7 @@ class GeneratorStream extends Stream {
 		return $result;
 	}
 
-	public function collect(StreamCollector $collector) {
-		return $collector->collect($this->_iterable);
+	public function collect(StreamCollector $collector): mixed {
+		return $collector->collect($this->iterable);
 	}
 }

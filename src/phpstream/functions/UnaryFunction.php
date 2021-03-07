@@ -19,5 +19,5 @@ interface UnaryFunction {
 	 *        	
 	 * @return mixed Result value of the function
 	 */
-	public function apply($value);
+	public function apply(mixed $value): mixed;
 }

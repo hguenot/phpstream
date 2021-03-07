@@ -52,14 +52,4 @@ class BasicMemoryStreamTest extends TestCase {
 		$res = Stream::concat($array1, Stream::of($array2, $this->isMemory()))->toArray();
 		$this->assertEquals([1, 2, 3, 4, 5, 6], $res);
 	}
-
-	public function testConcatFail() {
-		try {
-			$array1 = ['a' => 1, 'z' => 2, 'e' => 3];
-			$array2 = ['r' => 4, 't' => 5, 'y' => 6];
-			Stream::concat($array1, 3, Stream::of($array2, $this->isMemory()))->toArray();
-		} catch (Exception $ex) {
-			$this->assertInstanceOf(InvalidArgumentException::class, $ex, 'Should be an InvalidArgumentException exception');
-		}
-	}
 }

@@ -51,33 +51,13 @@ class PeekMemoryStreamTest extends TestCase {
 		$stream = Stream::of($array, $this->isMemory());
 		$res = $stream->peek(new PeekOperator(new class() implements UnaryFunction {
 
-			public function apply($value) {
+			public function apply(mixed $value): int {
 				$value->x *= 2;
+				return $value->x;
 			}
 		}))
 			->toMap();
 
 		$this->assertEquals(['a' => new \Bean(2), 'b' => new \Bean(4), 'c' => new \Bean(6), 'd' => new \Bean(8), 'e' => new \Bean(10), 'f' => new \Bean(12)], $res);
-	}
-
-	public function testNotCallable() {
-		try {
-			Stream::of([], $this->isMemory())->peek(true);
-			$this->fail('An expected exception has not been raised.');
-		} catch (Exception $ex) {
-			$this->assertInstanceOf(InvalidArgumentException::class, $ex, 'Should be an InvalidArgumentException exception');
-			return;
-		}
-	}
-
-	public function testNonObjProperty() {
-		try {
-			$array = ['a' => new \Bean(1), 'b' => new \Bean(2), 'c' => new \Bean(3), 'd' => new \Bean(4), 'e' => new \Bean(5), 'f' => new \Bean(6)];
-			$stream = Stream::of($array, $this->isMemory());
-			$stream->peek('getX')
-				->toMap();
-		} catch (Exception $ex) {
-			$this->assertInstanceOf(InvalidArgumentException::class, $ex, 'Should be an InvalidArgumentException exception');
-		}
 	}
 }

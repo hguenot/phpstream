@@ -34,7 +34,7 @@ class ReduceMemoryTest extends TestCase {
 		$array = [1, 2, 3, 4];
 		$stream = Stream::of($array, $this->isMemory());
 		$res =  $stream->reduce(new class implements BinaryFunction {
-			public function apply($carry, $value) {
+			public function apply(mixed $carry, mixed $value): float|int {
 				return ($carry == null ? 1 : $carry) * intval($value);
 			}
 		});
@@ -46,7 +46,7 @@ class ReduceMemoryTest extends TestCase {
 		$array = [];
 		$stream = Stream::of($array, $this->isMemory());
 		$res =  $stream->reduce(new class implements BinaryFunction {
-			public function apply($carry, $value) {
+			public function apply(mixed $carry, mixed $value): float|int {
 				return ($carry == null ? 1 : $carry) * intval($value);
 			}
 		}, -1);

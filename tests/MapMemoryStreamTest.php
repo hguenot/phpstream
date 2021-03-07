@@ -4,6 +4,7 @@ use phpstream\collectors\MapCollector;
 use phpstream\Stream;
 use phpstream\operators\MapOperator;
 use phpstream\functions\UnaryFunction;
+use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\TestCase;
 
 include_once (__DIR__ . '/bean/Bean.php');
@@ -61,10 +62,12 @@ class MapMemoryStreamTest extends TestCase {
 
 	public function testNotCallable() {
 		try {
-			Stream::of([], $this->isMemory())->map(true);
+			Stream::of([1, 3], $this->isMemory())->map(true)->toArray();
 			$this->fail('An expected exception has not been raised.');
+		} catch (AssertionFailedError $ex) {
+			throw $ex;
 		} catch (Exception $ex) {
-			$this->assertInstanceOf(InvalidArgumentException::class, $ex, 'Should be an InvalidArgumentException exception');
+			$this->assertInstanceOf(InvalidArgumentException::class, $ex, 'Should be an InvalidArgumentException exception '.get_class($ex));
 		}
 	}
 
@@ -91,7 +94,7 @@ class MapMemoryStreamTest extends TestCase {
 		$stream = Stream::of($array, $this->isMemory());
 		$res = $stream->map(new MapOperator(new class() implements UnaryFunction {
 
-			public function apply($value) {
+			public function apply(mixed $value): float|int {
 				return $value->x * 2;
 			}
 		}))

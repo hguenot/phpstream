@@ -38,21 +38,17 @@ class MaxCollector implements StreamCollector {
 	 * If parameter is a callable function, it should take 2 arguments and must return an integer less than, equal to,
 	 * or greater than zero if the first argument is considered to be respectively less than, equal to, or greater than the second
 	 *
-	 * @param callable|Comparator $cmp Comparator method / object.
-	 *
-	 * @throws InvalidArgumentException If parameter is not callable or instance of Comparator.
+	 * @param callable|Comparator|null $cmp Comparator method / object.
 	 */
-	public function __construct($cmp = null) {
+	public function __construct(callable|Comparator $cmp = null) {
 		if ($cmp === null) {
 			$this->_callable = function ($o1, $o2) {
 				return $o1 <=> $o2;
 			};
 		} else if ($cmp instanceof Comparator) {
 			$this->_comparator = $cmp;
-		} else if (is_callable($cmp)) {
-			$this->_callable = $cmp;
 		} else {
-			throw new InvalidArgumentException('Parameter must be callable or Comparator.');
+			$this->_callable = $cmp;
 		}
 	}
 

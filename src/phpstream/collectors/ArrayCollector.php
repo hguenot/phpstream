@@ -11,18 +11,11 @@ namespace phpstream\collectors;
  */
 class ArrayCollector implements StreamCollector {
 	/**
-	 * Flag indicating if keys are kept when collecting data
-	 * @var boolean $useKeys
-	 */
-	private $useKeys;
-
-	/**
 	 * ListCollector constructor.
 	 *
 	 * @param bool $useKeys Flag indicating if keys are kept when collecting data
 	 */
-	public function __construct(bool $useKeys = false) {
-		$this->useKeys = $useKeys;
+	public function __construct(private bool $useKeys = false) {
 	}
 
 	/**

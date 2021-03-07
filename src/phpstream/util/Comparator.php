@@ -6,6 +6,8 @@
  */
 namespace phpstream\util;
 
+use SebastianBergmann\Type\CallableType;
+
 /**
  * Interface for comparison function.
  */
@@ -21,5 +23,6 @@ interface Comparator {
 	 *
 	 * @return int
 	 */
-	public function compare($o1, $o2);
+	public function compare(mixed $o1, mixed $o2): int;
+
 }

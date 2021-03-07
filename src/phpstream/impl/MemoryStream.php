@@ -24,72 +24,25 @@ use phpstream\util\Optional;
  */
 class MemoryStream extends Stream {
 	/**
-	 * Enclosed array to be processed
-	 * @var array $_array
-	 */
-	private $_array;
-
-	/**
 	 * MemoryStream constructor.
 	 *
-	 * @param array $iterable Iterable value to be processed.
+	 * @param array $array Iterable value to be processed.
 	 */
-	public function __construct(array $iterable) {
-		$this->_array = $iterable;
+	public function __construct(private array $array) {
 	}
 
-	public function filter($filter): Stream {
-		if ($filter instanceof FilterOperator) {
-			[$function, $callable] = FilterOperator::getFn($filter);
-			if ($function) {
-				/* @var UnaryFunction $function */
-				$this->_array = array_filter($this->_array, function ($value) use ($function) {
-					return $function->apply($value);
-				});
-			} else {
-				/* @var callable $callable */
-				$this->_array = array_filter($this->_array, $callable);
-			}
-		} else if ($filter instanceof UnaryFunction) {
-			$this->_array = array_filter($this->_array, function ($value) use ($filter) {
-				return $filter->apply($value);
-			});
-		} else if (is_callable($filter)) {
-			$this->_array = array_filter($this->_array, $filter);
-		} else {
-			throw new InvalidArgumentException('Parameter must be callable or UnaryFunction.');
-		}
+	public function filter(callable|UnaryFunction|FilterOperator $filter): Stream {
+		$this->array = array_filter($this->array, new FilterOperator($filter));
 		return $this;
 	}
 
-	public function map($mapper): Stream {
-		[$function, $callable] = MapOperator::getFn($mapper);
-
-		if ($function) {
-			/* @var UnaryFunction $function */
-			$this->_array = array_map(function ($value) use ($function) {
-				return $function->apply($value);
-			}, $this->_array);
-		} else {
-			/* @var callable $callable */
-			$this->_array = array_map($callable, $this->_array);
-		}
-
+	public function map(callable|UnaryFunction|string|MapOperator $mapper): Stream {
+		$this->array = array_map(new MapOperator($mapper), $this->array);
 		return $this;
 	}
 
-	public function peek($peekingFunction): Stream {
-		[$function, $callable] = PeekOperator::getFn($peekingFunction);
-		if ($function) {
-			/* @var UnaryFunction $function */
-			array_walk($this->_array, function ($value) use ($function) {
-				return $function->apply($value);
-			});
-		} else {
-			/* @var callable $callable */
-			$this->_array = array_filter($this->_array, $callable);
-		}
-
+	public function peek(callable|UnaryFunction|PeekOperator $peekingFunction): Stream {
+		array_walk($this->array, new PeekOperator($peekingFunction));
 		return $this;
 	}
 
@@ -97,36 +50,34 @@ class MemoryStream extends Stream {
 		if ($limit < 0) {
 			throw new InvalidArgumentException('Limit must be a positive integer.');
 		}
-		$this->_array = array_slice($this->_array, 0, $limit);
+		$this->array = array_slice($this->array, 0, $limit);
 		return $this;
 	}
 
-	public function skip($limit): Stream {
+	public function skip(int $limit): Stream {
 		if ($limit < 0) {
 			throw new InvalidArgumentException('Limit must be a positive integer.');
 		}
-		$this->_array = array_slice($this->_array, $limit);
+		$this->array = array_slice($this->array, $limit);
 		return $this;
 	}
 
 	public function distinct(): Stream {
-		$this->_array = array_unique($this->_array);
+		$this->array = array_unique($this->array);
 		return $this;
 	}
 
-	public function index($indexer, $allowDuplicate = false): Stream {
+	public function index(callable|string $indexer, $allowDuplicate = false): Stream {
 		$f = is_string($indexer)
-				? function ($e) use ($indexer) {
-					return $e->$indexer;
-				}
+				? fn($e) => $e->$indexer
 				: $indexer;
 		$array = [];
 		if ($allowDuplicate) {
-			foreach ($this->_array as $value) {
+			foreach ($this->array as $value) {
 				$array[$f($value)] = $value;
 			}
 		} else {
-			foreach ($this->_array as $value) {
+			foreach ($this->array as $value) {
 				$key = $f($value);
 				if (array_key_exists($key, $array)) {
 					throw new InvalidArgumentException("Multiple elements got same key.");
@@ -134,61 +85,59 @@ class MemoryStream extends Stream {
 				$array[$key] = $value;
 			}
 		}
-		$this->_array = $array;
+		$this->array = $array;
 
 		return $this;
 	}
 
-	public function sort($cmp = null): Stream {
+	public function sort(callable|Comparator|string $cmp = null): Stream {
 		$fn = $this->_getComparator($cmp);
-		uasort($this->_array, $fn instanceof Comparator
-				? function ($o1, $o2) use ($fn) {
-					return $fn->compare($o1, $o2);
-				}
+		uasort($this->array, $fn instanceof Comparator
+				? fn ($o1, $o2) => $fn->compare($o1, $o2)
 				: $fn);
 		return $this;
 	}
 
 	public function execute(StreamOperator $operator): Stream {
-		$this->_array = iterable_to_array($operator->execute($this->_array), true);
+		$this->array = iterable_to_array($operator->execute($this->array), true);
 		return $this;
 	}
 
 	public function findAny(): Optional {
-		reset($this->_array);
-		return count($this->_array) > 0 ? Optional::ofNullable(next($this->_array)) : Optional::absent();
+		reset($this->array);
+		return count($this->array) > 0 ? Optional::ofNullable(next($this->array)) : Optional::absent();
 	}
 
 	public function findFirst(): Optional {
-		reset($this->_array);
-		return count($this->_array) > 0 ? Optional::ofNullable(current($this->_array)) : Optional::absent();
+		reset($this->array);
+		return count($this->array) > 0 ? Optional::ofNullable(current($this->array)) : Optional::absent();
 	}
 
 	public function findLast(): Optional {
-		reset($this->_array);
-		$count = count($this->_array);
-		return $count > 0 ? Optional::ofNullable(array_values($this->_array)[$count-1]) : Optional::absent();
+		reset($this->array);
+		$count = count($this->array);
+		return $count > 0 ? Optional::ofNullable(array_values($this->array)[$count-1]) : Optional::absent();
 	}
 
 	public function count(): int {
-		return count($this->_array);
+		return count($this->array);
 	}
 
 	public function toArray(): array {
-		return array_values($this->_array);
+		return array_values($this->array);
 	}
 
 	public function toMap(): array {
-		return $this->_array;
+		return $this->array;
 	}
 
 	public function toIterable(): iterable {
-		foreach ($this->_array as $key => $value) {
+		foreach ($this->array as $key => $value) {
 			yield $key => $value;
 		}
 	}
 
-	public function min($cmp = null): Optional {
+	public function min(callable|Comparator $cmp = null): Optional {
 		if ($cmp === null) {
 			$cmp = function($o1, $o2) {
 				return $o1 <=> $o2;
@@ -197,7 +146,7 @@ class MemoryStream extends Stream {
 		if (!($cmp instanceof Comparator) && !is_callable($cmp)) {
 			throw new InvalidArgumentException("Comparator callback must be instance of Comparator or a callable function.");
 		}
-		uasort($this->_array, $cmp instanceof Comparator
+		uasort($this->array, $cmp instanceof Comparator
 				? function ($o1, $o2) use ($cmp) {
 					return $cmp->compare($o1, $o2);
 				}
@@ -205,7 +154,7 @@ class MemoryStream extends Stream {
 		return $this->findFirst();
 	}
 
-	public function max($cmp = null): Optional {
+	public function max(callable|Comparator $cmp = null): Optional {
 		if ($cmp === null) {
 			$cmp = function($o1, $o2) {
 				return $o1 <=> $o2;
@@ -214,7 +163,7 @@ class MemoryStream extends Stream {
 		if (!($cmp instanceof Comparator) && !is_callable($cmp)) {
 			throw new InvalidArgumentException("Comparator callback must be instance of Comparator or a callable function.");
 		}
-		uasort($this->_array, $cmp instanceof Comparator
+		uasort($this->array, $cmp instanceof Comparator
 				? function ($o1, $o2) use ($cmp) {
 					return $cmp->compare($o2, $o1);
 				}
@@ -224,8 +173,8 @@ class MemoryStream extends Stream {
 		return $this->findFirst();
 	}
 
-	public function reduce($reducer, $initialValue = null) {
-		return array_reduce($this->_array, $reducer instanceof BinaryFunction
+	public function reduce(callable|BinaryFunction $reducer, mixed $initialValue = null): mixed {
+		return array_reduce($this->array, $reducer instanceof BinaryFunction
 				? function ($carry, $item) use ($reducer) {
 					return $reducer->apply($carry, $item);
 				}
@@ -233,8 +182,8 @@ class MemoryStream extends Stream {
 				$initialValue);
 	}
 
-	public function collect(StreamCollector $collector) {
-		return $collector->collect($this->_array);
+	public function collect(StreamCollector $collector): mixed {
+		return $collector->collect($this->array);
 	}
 
 }

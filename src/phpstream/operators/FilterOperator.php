@@ -8,6 +8,7 @@ namespace phpstream\operators;
 
 use InvalidArgumentException;
 use phpstream\functions\UnaryFunction;
+use phpstream\traits\OperatorInvokableTrait;
 
 /**
  * A filter operator is used during the Stream Processor to check if element could continue the process or not
@@ -15,6 +16,9 @@ use phpstream\functions\UnaryFunction;
  * @internal Internal API process.
  */
 class FilterOperator implements StreamOperator {
+
+	use OperatorInvokableTrait;
+
 	/**
 	 * Function used to filter each value during the streaming process.
 	 * It should take one argument (value in the collection) and returns a boolean (`function(mixed $value): bool`)
@@ -26,10 +30,10 @@ class FilterOperator implements StreamOperator {
 	/**
 	 * Function object used to filter each value during the streaming process.
 	 * The implemented UnaryFunction::apply should return a boolean value
-	 * @var UnaryFunction $_function.
+	 * @var null|UnaryFunction $_function.
 	 * @internal
 	 */
-	private $_function;
+	private ?UnaryFunction $_function;
 
 	/**
 	 * Construct a new operator with the filter function.
@@ -40,12 +44,11 @@ class FilterOperator implements StreamOperator {
 	 *
 	 * The value will be kept only if the return value of the filter method is considered as `true`
 	 *
-	 * @param callable|UnaryFunction $fn The filter function.
-	 *
-	 * @throws InvalidArgumentException If parameter is not callable or a UnaryFunction instance.
+	 * @param callable|UnaryFunction|FilterOperator $fn The filter function.
 	 */
-	public function __construct($fn) {
+	public function __construct(callable|UnaryFunction|FilterOperator $fn) {
 		[$this->_function, $this->_callable] = self::getFn($fn);
+		$this->buildInvoker($this->_function, $this->_callable);
 	}
 
 	/**
@@ -79,15 +82,13 @@ class FilterOperator implements StreamOperator {
 	 * @ignore
 	 * @internal
 	 */
-	public static function getFn($fn) {
+	private static function getFn(callable|UnaryFunction|FilterOperator $fn): array {
 		if ($fn instanceof FilterOperator) {
 			return [$fn->_function, $fn->_callable];
 		} else if ($fn instanceof UnaryFunction) {
 			return [$fn, null];
-		} else if (is_callable($fn)) {
-			return [null, $fn];
 		} else {
-			throw new InvalidArgumentException('Parameter must be callable or UnaryFunction.');
+			return [null, $fn];
 		}
 	}
 }

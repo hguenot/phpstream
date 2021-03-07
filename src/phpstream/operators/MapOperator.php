@@ -8,11 +8,14 @@ namespace phpstream\operators;
 
 use InvalidArgumentException;
 use phpstream\functions\UnaryFunction;
+use phpstream\traits\OperatorInvokableTrait;
 
 /**
  * Converts input value into another value
  */
 class MapOperator implements StreamOperator {
+
+	use OperatorInvokableTrait;
 
 	/**
 	 * Function used to map each value during the streaming process.
@@ -25,10 +28,10 @@ class MapOperator implements StreamOperator {
 	/**
 	 * Function object used to map each value during the streaming process.
 	 * The implemented UnaryFunction::apply should return any type of value
-	 * @var UnaryFunction $_function.
+	 * @var null|UnaryFunction $_function.
 	 * @internal
 	 */
-	private $_function;
+	private ?UnaryFunction $_function;
 
 	/**
 	 * Creates a new MapOperator using the given function.
@@ -41,12 +44,11 @@ class MapOperator implements StreamOperator {
 	 *
 	 * The returned value will replace the current value for the rest of process.
 	 *
-	 * @param callable|UnaryFunction|string $fn Mapping function. If function is a string, use object property or method as mapper.
-	 *        	
-	 * @throws InvalidArgumentException If parameter type is not valid.
+	 * @param callable|UnaryFunction|string|MapOperator $fn Mapping function. If function is a string, use object property or method as mapper.
 	 */
-	public function __construct($fn) {
+	public function __construct(callable|UnaryFunction|string|MapOperator $fn) {
 		[$this->_function, $this->_callable] = self::getFn($fn);
+		$this->buildInvoker($this->_function, $this->_callable);
 	}
 
 	/**
@@ -76,14 +78,14 @@ class MapOperator implements StreamOperator {
 	 * @ignore
 	 * @internal
 	 */
-	public static function getFn($fn) {
+	private static function getFn(callable|UnaryFunction|MapOperator|string $fn): array {
 		if ($fn instanceof MapOperator) {
 			return [$fn->_function, $fn->_callable];
 		} else if ($fn instanceof UnaryFunction) {
 			return [$fn, null];
 		} else if (is_callable($fn)) {
 			return [null, $fn];
-		} else if (is_string($fn)) {
+		} else {
 			return [null, function ($obj) use ($fn) {
 				if (!is_object($obj))
 					throw new InvalidArgumentException(gettype($obj) . ' is not an object, ' . $fn . ' could not be applied.');
@@ -94,8 +96,6 @@ class MapOperator implements StreamOperator {
 				else
 					throw new InvalidArgumentException($fn . ' is not a property or a method of ' . get_class($obj));
 			}];
-		} else {
-			throw new InvalidArgumentException('Parameter must be callable or UnaryFunction.');
 		}
 	}
 

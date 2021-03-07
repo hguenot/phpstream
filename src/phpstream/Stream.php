@@ -9,10 +9,12 @@ namespace phpstream;
 use InvalidArgumentException;
 use phpstream\collectors\StreamCollector;
 use phpstream\functions\BinaryFunction;
+use phpstream\functions\UnaryFunction;
 use phpstream\impl\GeneratorStream;
 use phpstream\impl\MemoryStream;
 use phpstream\operators\FilterOperator;
 use phpstream\operators\MapOperator;
+use phpstream\operators\PeekOperator;
 use phpstream\operators\StreamOperator;
 use phpstream\util\Comparator;
 use phpstream\util\Optional;
@@ -51,7 +53,7 @@ abstract class Stream {
 	 *
 	 * @return Stream Stream processor for all parameters
 	 */
-	public static function concat(... $streams): Stream {
+	public static function concat(Stream|array... $streams): Stream {
 		return new GeneratorStream(self::_toIterable($streams));
 	}
 
@@ -82,29 +84,29 @@ abstract class Stream {
 	 * corresponding to array value in the enclosing array. It must
 	 * return <tt>true</tt> if the element is valid, <tt>false</tt> otherwise.
 	 *
-	 * @param callable|functions\UnaryFunction|FilterOperator $filter Filtering callback function.
+	 * @param callable|UnaryFunction|FilterOperator $filter Filtering callback function.
 	 *
 	 * @return Stream Current stream.
 	 */
-	public abstract function filter($filter): Stream;
+	public abstract function filter(callable|UnaryFunction|FilterOperator $filter): Stream;
 
 	/**
 	 * Maps each element of the enclosing array using function.
 	 *
-	 * @param callable|functions\UnaryFunction $mapper Mapping function to call
+	 * @param callable|UnaryFunction|string|MapOperator $mapper Mapping function to call
 	 *
 	 * @return Stream Current stream.
 	 */
-	public abstract function map($mapper): Stream;
+	public abstract function map(callable|UnaryFunction|string|MapOperator $mapper): Stream;
 
 	/**
 	 * Maps each element of the enclosing array using function.
 	 *
-	 * @param callable|functions\UnaryFunction $peekingFunction Mapping function to call
+	 * @param callable|UnaryFunction|PeekOperator $peekingFunction Mapping function to call
 	 *
 	 * @return Stream Current stream.
 	 */
-	public abstract function peek($peekingFunction): Stream;
+	public abstract function peek(callable|UnaryFunction|PeekOperator $peekingFunction): Stream;
 
 	/**
 	 * Limits the number of result.
@@ -122,7 +124,7 @@ abstract class Stream {
 	 *
 	 * @return Stream Current stream.
 	 */
-	public abstract function skip($limit): Stream;
+	public abstract function skip(int $limit): Stream;
 
 	/**
 	 * Returns a new Stream that contains only distinct elements.
@@ -139,16 +141,16 @@ abstract class Stream {
 	 *
 	 * @return Stream Current stream.
 	 */
-	public abstract function index($indexer, $allowDuplicate = false): Stream;
+	public abstract function index(callable|string $indexer, $allowDuplicate = false): Stream;
 
 	/**
 	 * Sort stream.
 	 *
-	 * @param callable|Comparator|string $cmp Comparator object / callback or field/method.
+	 * @param callable|Comparator|string|null $cmp Comparator object / callback or field/method.
 	 *
 	 * @return Stream Current stream.
 	 */
-	public abstract function sort($cmp = null): Stream;
+	public abstract function sort(callable|Comparator|string $cmp = null): Stream;
 
 	/**
 	 * Skip the first result.
@@ -211,20 +213,20 @@ abstract class Stream {
 	/**
 	 * Returns an optional containing the min value of the stream if exists.
 	 *
-	 * @param callable|Comparator $cmp Comparator object / callback.
+	 * @param callable|Comparator|null $cmp Comparator object / callback.
 	 *
 	 * @return Optional The min value of the stream.
 	 */
-	public abstract function min($cmp = null): Optional;
+	public abstract function min(callable|Comparator $cmp = null): Optional;
 
 	/**
 	 * Returns an optional containing the max value of the stream if exists.
 	 *
-	 * @param callable|Comparator $cmp Comparator object / callback.
+	 * @param callable|Comparator|null $cmp Comparator object / callback.
 	 *
 	 * @return Optional The max value of the stream.
 	 */
-	public abstract function max($cmp = null): Optional;
+	public abstract function max(callable|Comparator $cmp = null): Optional;
 
 	/**
 	 * Reduces the value of the array using the given function.
@@ -234,7 +236,7 @@ abstract class Stream {
 	 *
 	 * @return mixed The reduced value of the stream.
 	 */
-	public abstract function reduce($reducer, $initialValue = null);
+	public abstract function reduce(callable|BinaryFunction $reducer, $initialValue = null): mixed;
 
 	/**
 	 * Collect data according given Stream collector.
@@ -243,14 +245,14 @@ abstract class Stream {
 	 *
 	 * @return mixed Depends on Stream Collector
 	 */
-	public abstract function collect(StreamCollector $collector);
+	public abstract function collect(StreamCollector $collector): mixed;
 
 	/**
-	 * @param $cmp
+	 * @param callable|Comparator|null $cmp
 	 *
 	 * @return callable|Comparator A comparator method or object
 	 */
-	protected final function _getComparator($cmp) {
+	protected final function _getComparator(callable|Comparator $cmp = null): callable|Comparator {
 		$fn = $cmp;
 		if ($fn === null) {
 			$fn = function ($o1, $o2) {
@@ -259,7 +261,7 @@ abstract class Stream {
 		}
 		if (is_string($fn)) {
 			/* @var callable $callable */
-			$callable = MapOperator::getFn($fn)[1];
+			$callable = new MapOperator($fn);
 			if ($callable) {
 				$fn = function ($o1, $o2) use ($callable) {
 					return $callable($o1) <=> $callable($o2);

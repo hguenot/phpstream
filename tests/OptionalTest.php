@@ -2,6 +2,7 @@
 
 use phpstream\functions\UnaryFunction;
 use phpstream\util\Optional;
+use PHPUnit\Framework\AssertionFailedError;
 
 class OptionalTest extends \PHPUnit\Framework\TestCase {
 
@@ -20,10 +21,12 @@ class OptionalTest extends \PHPUnit\Framework\TestCase {
 
 		try {
 			$opt->get();
-		} catch (\BadMethodCallException $ex) {
-			return;
+			$this->fail('An expected exception has not been raised.');
+		} catch (AssertionFailedError $ex) {
+			throw $ex;
+		} catch (Exception $ex) {
+			$this->assertInstanceOf(BadMethodCallException::class, $ex, 'Should be an InvalidArgumentException exception '.get_class($ex));
 		}
-		$this->fail('An expected exception has not been raised.');
 	}
 
 	public function testEmptyOrNot() {
@@ -41,6 +44,8 @@ class OptionalTest extends \PHPUnit\Framework\TestCase {
 		try {
 			$opt->get();
 			$this->fail('An expected exception has not been raised.');
+		} catch (AssertionFailedError $ex) {
+			throw $ex;
 		} catch (\Exception $ex) {
 			$this->assertInstanceOf(\BadMethodCallException::class, $ex, 'Should be an InvalidArgumentException exception');
 		}
@@ -58,7 +63,7 @@ class OptionalTest extends \PHPUnit\Framework\TestCase {
 		$this->assertEquals(true, $opt->isEmpty());
 
 		$opt = Optional::of([0, 1, 2])->map(new class implements UnaryFunction {
-			public function apply($array) {
+			public function apply(mixed $array): mixed {
 				return max($array);
 			}
 		});
@@ -70,6 +75,8 @@ class OptionalTest extends \PHPUnit\Framework\TestCase {
 		try {
 			Optional::of(null);
 			$this->fail('An expected exception has not been raised.');
+		} catch (AssertionFailedError $ex) {
+			throw $ex;
 		} catch (\Exception $ex) {
 			$this->assertInstanceOf(\InvalidArgumentException::class, $ex, 'Should be an InvalidArgumentException exception');
 		}
@@ -84,6 +91,8 @@ class OptionalTest extends \PHPUnit\Framework\TestCase {
 		try {
 			$opt->orElse(null);
 			$this->fail('An expected exception has not been raised.');
+		} catch (AssertionFailedError $ex) {
+			throw $ex;
 		} catch (\Exception $ex) {
 			$this->assertInstanceOf(\InvalidArgumentException::class, $ex, 'Should be an InvalidArgumentException exception');
 		}
@@ -98,6 +107,8 @@ class OptionalTest extends \PHPUnit\Framework\TestCase {
 		try {
 			$opt->orElse(null);
 			$this->fail('An expected exception has not been raised.');
+		} catch (AssertionFailedError $ex) {
+			throw $ex;
 		} catch (\Exception $ex) {
 			$this->assertInstanceOf(\InvalidArgumentException::class, $ex, 'Should be an InvalidArgumentException exception');
 		}
@@ -130,6 +141,8 @@ class OptionalTest extends \PHPUnit\Framework\TestCase {
 		try {
 			Optional::absent()->orElseThrow(new \InvalidArgumentException('yeah'));
 			$this->fail('An expected exception has not been raised.');
+		} catch (AssertionFailedError $ex) {
+			throw $ex;
 		} catch (\Exception $ex) {
 			$this->assertInstanceOf(\InvalidArgumentException::class, $ex, 'Should be an InvalidArgumentException exception');
 		}

@@ -19,5 +19,5 @@ interface BinaryFunction {
 	 *
 	 * @return mixed Result value of the function
 	 */
-	public function apply($first, $second);
+	public function apply(mixed $first, mixed $second): mixed;
 }
