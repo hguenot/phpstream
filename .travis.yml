@@ -32,4 +32,4 @@ before_install:
   - pip install --user codecov
 
 after_success:
-  - test -z "${WITH_CODECOV}" || codecov
+  - test -z "${WITH_CODECOV}" || codecov --branch php-7
