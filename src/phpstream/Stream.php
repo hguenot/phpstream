@@ -236,7 +236,7 @@ abstract class Stream {
 	 *
 	 * @return mixed The reduced value of the stream.
 	 */
-	public abstract function reduce(callable|BinaryFunction $reducer, $initialValue = null): mixed;
+	public abstract function reduce(callable|BinaryFunction $reducer, mixed $initialValue = null): mixed;
 
 	/**
 	 * Collect data according given Stream collector.

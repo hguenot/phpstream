@@ -169,7 +169,7 @@ class GeneratorStream extends Stream {
 		return $collector->collect($this->iterable);
 	}
 
-	public function reduce(callable|BinaryFunction $reducer, $initialValue = null): mixed {
+	public function reduce(callable|BinaryFunction $reducer, mixed $initialValue = null): mixed {
 		$iterable = $this->iterable;
 		$fn = $reducer instanceof BinaryFunction
 				? function ($carry, $item) use ($reducer) {

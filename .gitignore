@@ -1,13 +1,21 @@
-nbproject
+# composer generated files
+/vendor/
+composer.lock
+
+# -- Temp folder
+coverage.xml
 docs/api/phpdoc-cache-*
 docs/coverage
-/vendor/
-coverage.xml
+yarn.lock
+test-report.xml
+
+# -- IDE specific path / files
+nbproject
 .settings
 .buildpath
 .project
-composer.lock
-test-report.xml
-yarn.lock
+.phpunit.result.cache
+.DS_Store
+.reports
 *.iml
 .idea
