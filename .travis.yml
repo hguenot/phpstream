@@ -5,13 +5,16 @@ matrix:
     - php: 7.1
       env:
         - WITH_CODECOV=true
+        - WITH_BENCHMARK=true
         - PHPUNIT_BIN=./vendor/bin/phpunit
     - php: 7.2
       env:
         - PHPUNIT_BIN=./vendor/bin/phpunit
+        - WITH_BENCHMARK=true
     - php: 7.3
       env:
         - CLEAR_PHP_UNIT=true
+        - WITH_BENCHMARK=true
         - PHPUNIT_BIN=phpunit
     - php: nightly
       env:
