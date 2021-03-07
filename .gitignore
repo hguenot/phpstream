@@ -10,3 +10,4 @@ composer.lock
 test-report.xml
 yarn.lock
 *.iml
+.idea
