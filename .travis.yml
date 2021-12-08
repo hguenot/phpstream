@@ -2,14 +2,6 @@ language: php
 
 matrix:
   include:
-    - php: 7.1
-      env:
-        - WITH_BENCHMARK=true
-        - PHPUNIT_BIN=./vendor/bin/phpunit
-    - php: 7.2
-      env:
-        - PHPUNIT_BIN=./vendor/bin/phpunit
-        - WITH_BENCHMARK=true
     - php: 7.3
       env:
         - CLEAR_PHP_UNIT=true
@@ -21,6 +13,18 @@ matrix:
         - WITH_BENCHMARK=true
         - WITH_CODECOV=true
         - PHPUNIT_BIN=phpunit
+    - php: 8.0
+      env:
+        - CLEAR_PHP_UNIT=true
+        - WITH_BENCHMARK=true
+        - PHPUNIT_BIN=phpunit
+        - WITH_CODECOV=true
+    - php: 8.1
+      env:
+        - CLEAR_PHP_UNIT=true
+        - WITH_BENCHMARK=true
+        - PHPUNIT_BIN=phpunit
+        - WITH_CODECOV=true
     - php: nightly
       env:
         - CLEAR_PHP_UNIT=true
