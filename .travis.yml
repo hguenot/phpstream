@@ -1,8 +1,33 @@
 language: php
 
+php:
+  - '8.0'
+  - '8.1'
+  - '8.2'
+  - hhvm
+  - nightly
+
 matrix:
   include:
     - php: 8.0
+      env:
+        - CLEAR_PHP_UNIT=true
+        - WITH_BENCHMARK=true
+        - PHPUNIT_BIN=phpunit
+        - WITH_CODECOV=true
+    - php: 8.1
+      env:
+        - CLEAR_PHP_UNIT=true
+        - WITH_BENCHMARK=true
+        - PHPUNIT_BIN=phpunit
+        - WITH_CODECOV=true
+    - php: 8.2
+      env:
+        - CLEAR_PHP_UNIT=true
+        - WITH_BENCHMARK=true
+        - PHPUNIT_BIN=phpunit
+        - WITH_CODECOV=true
+    - php: hhvm
       env:
         - CLEAR_PHP_UNIT=true
         - WITH_BENCHMARK=true
